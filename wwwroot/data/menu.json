@@ -1,0 +1,86 @@
+[
+  {
+    "title": "Dashboard",
+    "section": "dashboard-section",
+    "icon": "bi-grid-1x2-fill",
+    "description": "Overview of school activities, key metrics and recent enrollments."
+  },
+  {
+    "title": "Students",
+    "section": "students-section",
+    "icon": "bi-people-fill",
+    "description": "Manage student records, filter by class, add new admissions."
+  },
+  {
+    "title": "Teachers",
+    "section": "teachers-section",
+    "icon": "bi-person-badge-fill",
+    "description": "Faculty staff profiles, departments, and qualifications."
+  },
+  {
+    "title": "10th Board Passouts",
+    "section": "passouts-section",
+    "icon": "bi-trophy-fill",
+    "description": "Historical 10th standard board exam results, percentages and distinctions."
+  },
+  {
+    "title": "Classes & Sections",
+    "section": "classes-section",
+    "icon": "bi-building",
+    "description": "Grade divisions, classroom allocations and assigned class teachers."
+  },
+  {
+    "title": "Subjects & Syllabus",
+    "section": "subjects-section",
+    "icon": "bi-book-half",
+    "description": "Curriculum details, syllabus outlines and weekly period schedules."
+  },
+  {
+    "title": "Daily Attendance",
+    "section": "attendance-section",
+    "icon": "bi-calendar-check-fill",
+    "description": "Interactive student attendance register with real-time stats."
+  },
+  {
+    "title": "Exams & Marks",
+    "section": "exams-section",
+    "icon": "bi-pencil-square",
+    "description": "Upcoming exam timetables, assessment schedules and grading criteria."
+  },
+  {
+    "title": "Fee Structure",
+    "section": "fees-section",
+    "icon": "bi-wallet2",
+    "description": "Class-wise annual fee schedule and interactive fee calculator."
+  },
+  {
+    "title": "Notices & Alerts",
+    "section": "notices-section",
+    "icon": "bi-megaphone-fill",
+    "description": "Official announcements, exam circulars and holiday notices."
+  },
+  {
+    "title": "Library Catalog",
+    "section": "library-section",
+    "icon": "bi-journal-bookmark-fill",
+    "description": "Searchable book inventory, reference material and availability status."
+  },
+  {
+    "title": "School Events",
+    "section": "events-section",
+    "icon": "bi-calendar-event-fill",
+    "description": "Annual sports meet, science exhibitions and cultural fests calendar."
+  },
+  {
+    "title": "Reports & Analytics",
+    "section": "reports-section",
+    "icon": "bi-graph-up-arrow",
+    "description": "Academic analytics, pass percentages and student enrollment trends."
+  },
+  {
+    "title": "Contact & Help",
+    "section": "contact-section",
+    "icon": "bi-telephone-fill",
+    "description": "Admissions office contact, campus address and inquiry submission."
+  }
+]

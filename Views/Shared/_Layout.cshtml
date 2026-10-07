@@ -1,0 +1,461 @@
+@* Layout for Ganesh High School Portal *@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Ganesh High School</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5.3 & Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    
+    <!-- Site Styles -->
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- Sidebar Navigation (Hidden by default, slides out when clicking 3 lines) -->
+        <aside id="appSidebar" class="app-sidebar">
+            <div class="sidebar-header">
+                <a href="/" class="sidebar-brand">
+                    <div class="brand-icon">
+                        <i class="bi bi-mortarboard-fill"></i>
+                    </div>
+                    <div class="brand-text">
+                        <span class="brand-title">Ganesh School</span>
+                        <span class="brand-subtitle">Pandharpur Portal</span>
+                    </div>
+                </a>
+                <button id="sidebarCloseBtn" class="sidebar-close-btn" title="Close Menu">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
+            <div class="sidebar-body">
+                <div class="nav-section-title">Core Management</div>
+                <ul class="sidebar-nav-list">
+                    <li class="sidebar-nav-item">
+                        <a class="sidebar-nav-link active" data-section="dashboard-section" href="/#dashboard">
+                            <i class="bi bi-grid-1x2-fill"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a class="sidebar-nav-link" data-section="students-section" href="/#students">
+                            <i class="bi bi-people-fill"></i>
+                            <span>Students Data</span>
+                            <span class="nav-badge bg-primary text-white" id="sidebarStudentCount">22+</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a class="sidebar-nav-link" data-section="teachers-section" href="/#teachers">
+                            <i class="bi bi-person-badge-fill"></i>
+                            <span>Teachers & Faculty</span>
+                            <span class="nav-badge bg-info text-white">Staff</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a class="sidebar-nav-link" data-section="passouts-section" href="/#passouts">
+                            <i class="bi bi-trophy-fill"></i>
+                            <span>10th Board Passouts</span>
+                            <span class="nav-badge bg-success text-white">Results</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a class="sidebar-nav-link" data-section="stock-section" href="/#stock">
+                            <i class="bi bi-boxes"></i>
+                            <span>Stock & Materials</span>
+                            <span class="nav-badge bg-warning text-dark fw-bold">Clerk</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="nav-section-title">Academic & Campus</div>
+                <ul class="sidebar-nav-list">
+                    <li class="sidebar-nav-item">
+                        <a class="sidebar-nav-link" data-section="classes-section" href="/#classes">
+                            <i class="bi bi-building"></i>
+                            <span>Classes & Sections</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a class="sidebar-nav-link" data-section="subjects-section" href="/#subjects">
+                            <i class="bi bi-book-half"></i>
+                            <span>Subjects & Syllabus</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a class="sidebar-nav-link" data-section="attendance-section" href="/#attendance">
+                            <i class="bi bi-calendar-check-fill"></i>
+                            <span>Daily Attendance</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a class="sidebar-nav-link" data-section="exams-section" href="/#exams">
+                            <i class="bi bi-pencil-square"></i>
+                            <span>Exams & Marks</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a class="sidebar-nav-link" data-section="fees-section" href="/#fees">
+                            <i class="bi bi-wallet2"></i>
+                            <span>Fee Structure</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="nav-section-title">School Operations</div>
+                <ul class="sidebar-nav-list">
+                    <li class="sidebar-nav-item">
+                        <a class="sidebar-nav-link" data-section="notices-section" href="/#notices">
+                            <i class="bi bi-megaphone-fill"></i>
+                            <span>Notices & Circulars</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a class="sidebar-nav-link" data-section="library-section" href="/#library">
+                            <i class="bi bi-journal-bookmark-fill"></i>
+                            <span>Library Catalog</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a class="sidebar-nav-link" data-section="events-section" href="/#events">
+                            <i class="bi bi-calendar-event-fill"></i>
+                            <span>School Events</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a class="sidebar-nav-link" data-section="reports-section" href="/#reports">
+                            <i class="bi bi-graph-up-arrow"></i>
+                            <span>Reports & Analytics</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a class="sidebar-nav-link" data-section="contact-section" href="/#contact">
+                            <i class="bi bi-telephone-fill"></i>
+                            <span>Contact & Help</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="admin-avatar">GH</div>
+                <div class="admin-info">
+                    <span class="admin-name">Principal Admin</span>
+                    <span class="admin-role">Academic Year 2026–27</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Sidebar Overlay (closes when clicked outside) -->
+        <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+        <!-- Main Wrapper -->
+        <div class="app-main">
+            <!-- Topbar Header -->
+            <header class="app-topbar">
+                <div class="topbar-left">
+                    <!-- Left Corner: Three Small Lines Hamburger Button -->
+                    <button id="menuToggleBtn" class="topbar-menu-btn" title="Open Navigation Menu">
+                        <i class="bi bi-list"></i>
+                    </button>
+
+                    <!-- Searching Panel -->
+                    <div class="topbar-search-panel">
+                        <i class="bi bi-search search-icon"></i>
+                        <input type="text" id="globalSearchInput" class="topbar-search-input" placeholder="Search students, classes, faculty, records..." />
+                        <button id="searchClearBtn" class="search-clear-btn" title="Clear Search">
+                            <i class="bi bi-x-circle-fill"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="topbar-right">
+                    <!-- Academic Badge -->
+                    <div class="academic-badge d-none d-md-inline-flex">
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <span>Admissions Open 2026–27</span>
+                    </div>
+
+                    <!-- School Clerk Portal Badge -->
+                    <div class="clerk-office-badge d-none d-lg-inline-flex" onclick="switchSection('stock-section')" style="cursor: pointer;" title="School Clerk Office Management">
+                        <i class="bi bi-clipboard2-check-fill text-warning"></i>
+                        <span>Clerk Portal: Active</span>
+                    </div>
+
+                    <!-- Quick Add Button -->
+                    <button class="topbar-btn topbar-btn-primary" onclick="openAddStudentModal()">
+                        <i class="bi bi-person-plus-fill"></i>
+                        <span class="d-none d-sm-inline">+ Add Student</span>
+                    </button>
+
+                    <!-- Right Corner: School Logo ONLY ICON with Interactive Dropdown Menu -->
+                    <div class="topbar-logo-wrapper position-relative">
+                        <button type="button" class="topbar-logo-icon-only" id="topbarLogoIcon" title="Click to Open Ganesh School Menu" aria-label="Open School Menu">
+                            <i class="bi bi-mortarboard-fill"></i>
+                        </button>
+
+                        <!-- School Portal Quick Menu Dropdown -->
+                        <div id="logoDropdownMenu" class="logo-dropdown-menu shadow-lg">
+                            <div class="logo-dropdown-header">
+                                <div class="dropdown-header-icon">
+                                    <i class="bi bi-mortarboard-fill"></i>
+                                </div>
+                                <div class="dropdown-header-info">
+                                    <span class="dropdown-brand-title">Ganesh High School</span>
+                                    <span class="dropdown-brand-sub">Pandharpur Portal • 2026–27</span>
+                                </div>
+                                <button type="button" class="dropdown-close-btn" id="logoDropdownCloseBtn" title="Close Menu">&times;</button>
+                            </div>
+
+                            <div class="logo-dropdown-body">
+                                <div class="dropdown-section-label">PORTAL NAVIGATION</div>
+                                <div class="dropdown-menu-grid">
+                                    <a class="dropdown-item-link" data-section="dashboard-section" href="/#dashboard">
+                                        <i class="bi bi-grid-1x2-fill text-primary"></i>
+                                        <span>Dashboard</span>
+                                    </a>
+                                    <a class="dropdown-item-link" data-section="students-section" href="/#students">
+                                        <i class="bi bi-people-fill text-primary"></i>
+                                        <span>Students (23)</span>
+                                    </a>
+                                    <a class="dropdown-item-link" data-section="teachers-section" href="/#teachers">
+                                        <i class="bi bi-person-badge-fill text-info"></i>
+                                        <span>Teachers</span>
+                                    </a>
+                                    <a class="dropdown-item-link" data-section="passouts-section" href="/#passouts">
+                                        <i class="bi bi-trophy-fill text-success"></i>
+                                        <span>10th Passouts</span>
+                                    </a>
+                                    <a class="dropdown-item-link" data-section="classes-section" href="/#classes">
+                                        <i class="bi bi-building text-secondary"></i>
+                                        <span>Classes</span>
+                                    </a>
+                                    <a class="dropdown-item-link" data-section="attendance-section" href="/#attendance">
+                                        <i class="bi bi-calendar-check-fill text-success"></i>
+                                        <span>Attendance</span>
+                                    </a>
+                                    <a class="dropdown-item-link" data-section="fees-section" href="/#fees">
+                                        <i class="bi bi-wallet2 text-warning"></i>
+                                        <span>Fees</span>
+                                    </a>
+                                    <a class="dropdown-item-link" data-section="notices-section" href="/#notices">
+                                        <i class="bi bi-megaphone-fill text-danger"></i>
+                                        <span>Notices</span>
+                                    </a>
+                                    <a class="dropdown-item-link" data-section="library-section" href="/#library">
+                                        <i class="bi bi-journal-bookmark-fill text-primary"></i>
+                                        <span>Library</span>
+                                    </a>
+                                    <a class="dropdown-item-link" data-section="stock-section" href="/#stock">
+                                        <i class="bi bi-boxes text-warning"></i>
+                                        <span>Stock & Materials</span>
+                                    </a>
+                                    <a class="dropdown-item-link" data-section="contact-section" href="/#contact">
+                                        <i class="bi bi-telephone-fill text-dark"></i>
+                                        <span>Contact</span>
+                                    </a>
+                                </div>
+
+                                <div class="dropdown-footer-actions">
+                                    <button type="button" class="btn btn-sm btn-primary w-100 mb-2" onclick="openAddStudentModal(); closeLogoDropdown();">
+                                        <i class="bi bi-person-plus-fill me-1"></i> + Add New Student
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary w-100" onclick="openSidebar(); closeLogoDropdown();">
+                                        <i class="bi bi-layout-sidebar-inset me-1"></i> Open Full Navigation Drawer
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Page Content Body -->
+            <main role="main" class="page-container">
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show shadow-sm rounded-3 mb-4" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                @RenderBody()
+            </main>
+
+            <!-- Site Footer (Fouter side) -->
+            <footer class="app-footer">
+                <div class="footer-top">
+                    <div class="row g-4">
+                        <!-- Col 1: School Identity & Recognition -->
+                        <div class="col-lg-4 col-md-6">
+                            <div class="footer-brand">
+                                <div class="d-flex align-items-center gap-2 mb-3">
+                                    <div class="footer-logo-icon">
+                                        <i class="bi bi-mortarboard-fill"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="footer-school-name mb-0">Ganesh High School</h4>
+                                        <span class="footer-school-sub">Pandharpur, Maharashtra</span>
+                                    </div>
+                                </div>
+                                <p class="footer-tagline">
+                                    Empowering students with knowledge, leadership, and integrity. Admissions open for Nursery to Class 10th for the academic year 2026–27.
+                                </p>
+                                <div class="footer-badges d-flex flex-wrap gap-2 mt-3">
+                                    <span class="footer-badge"><i class="bi bi-patch-check-fill text-warning me-1"></i>Govt. Recognized</span>
+                                    <span class="footer-badge"><i class="bi bi-shield-check text-info me-1"></i>ISO 9001:2015</span>
+                                    <span class="footer-badge"><i class="bi bi-trophy-fill text-warning me-1"></i>100% Board Pass</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Col 2: Navigation Modules -->
+                        <div class="col-lg-2 col-md-6 col-6">
+                            <h5 class="footer-col-title">Portal Modules</h5>
+                            <ul class="footer-links-list">
+                                <li><a href="javascript:void(0)" onclick="if(window.switchSection) switchSection('dashboard-section')"><i class="bi bi-chevron-right"></i> Overview</a></li>
+                                <li><a href="javascript:void(0)" onclick="if(window.switchSection) switchSection('students-section')"><i class="bi bi-chevron-right"></i> Students Data</a></li>
+                                <li><a href="javascript:void(0)" onclick="if(window.switchSection) switchSection('teachers-section')"><i class="bi bi-chevron-right"></i> Teachers Staff</a></li>
+                                <li><a href="javascript:void(0)" onclick="if(window.switchSection) switchSection('passouts-section')"><i class="bi bi-chevron-right"></i> 10th Board Stars</a></li>
+                                <li><a href="javascript:void(0)" onclick="if(window.switchSection) switchSection('stock-section')"><i class="bi bi-chevron-right"></i> Clerk Inventory</a></li>
+                                <li><a href="javascript:void(0)" onclick="if(window.switchSection) switchSection('timetable-section')"><i class="bi bi-chevron-right"></i> Daily Timetable</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Col 3: Academics & Campus -->
+                        <div class="col-lg-2 col-md-6 col-6">
+                            <h5 class="footer-col-title">Academics</h5>
+                            <ul class="footer-links-list">
+                                <li><a href="javascript:void(0)" onclick="if(window.switchSection) switchSection('classes-section')"><i class="bi bi-chevron-right"></i> Classes (1st-10th)</a></li>
+                                <li><a href="javascript:void(0)" onclick="if(window.switchSection) switchSection('subjects-section')"><i class="bi bi-chevron-right"></i> Curriculum</a></li>
+                                <li><a href="javascript:void(0)" onclick="if(window.switchSection) switchSection('attendance-section')"><i class="bi bi-chevron-right"></i> Attendance</a></li>
+                                <li><a href="javascript:void(0)" onclick="if(window.switchSection) switchSection('fees-section')"><i class="bi bi-chevron-right"></i> Fee Structure</a></li>
+                                <li><a href="javascript:void(0)" onclick="if(window.switchSection) switchSection('notices-section')"><i class="bi bi-chevron-right"></i> School Notices</a></li>
+                                <li><a href="javascript:void(0)" onclick="if(window.switchSection) switchSection('library-section')"><i class="bi bi-chevron-right"></i> Digital Library</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Col 4: Campus Location & Helpline (from user's screenshot) -->
+                        <div class="col-lg-4 col-md-6">
+                            <h5 class="footer-col-title">Campus & Helpline</h5>
+                            <div class="footer-contact-box">
+                                <div class="footer-contact-item">
+                                    <i class="bi bi-geo-alt-fill text-danger fs-5 mt-1"></i>
+                                    <div>
+                                        <strong class="text-white">Campus Address:</strong>
+                                        <p class="mb-0 text-white-50">Near Main Road, Pandharpur, Maharashtra – 413304</p>
+                                    </div>
+                                </div>
+                                <div class="footer-contact-item">
+                                    <i class="bi bi-telephone-fill text-primary fs-5 mt-1"></i>
+                                    <div>
+                                        <strong class="text-white">Admissions Helpline:</strong>
+                                        <p class="mb-0">
+                                            <a href="tel:+919168434370" class="footer-contact-link text-warning fw-bold">+91 9168434370</a>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="footer-contact-item">
+                                    <i class="bi bi-envelope-fill text-success fs-5 mt-1"></i>
+                                    <div>
+                                        <strong class="text-white">Official Email:</strong>
+                                        <p class="mb-0">
+                                            <a href="mailto:info@ganeshschool.com" class="footer-contact-link text-white-50">info@ganeshschool.com</a>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="footer-contact-item">
+                                    <i class="bi bi-clock-fill text-warning fs-5 mt-1"></i>
+                                    <div>
+                                        <strong class="text-white">Office Working Hours:</strong>
+                                        <p class="mb-0 text-white-50">Monday to Saturday: 8:30 AM – 4:30 PM</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Action buttons -->
+                            <div class="mt-3 d-flex gap-2 flex-wrap">
+                                <button type="button" class="btn btn-sm btn-primary px-3" onclick="openAddStudentModal()">
+                                    <i class="bi bi-person-plus-fill me-1"></i> Register Student
+                                </button>
+                                <a href="tel:+919168434370" class="btn btn-sm btn-outline-warning">
+                                    <i class="bi bi-telephone-fill me-1"></i> Call Helpline
+                                </a>
+                                <a href="https://wa.me/919168434370" target="_blank" class="btn btn-sm btn-outline-success">
+                                    <i class="bi bi-whatsapp me-1"></i> WhatsApp
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Bottom Sub-bar -->
+                <div class="footer-bottom">
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                        <div class="footer-copy">
+                            <span>&copy; 2026 <strong>Ganesh High School</strong>, Pandharpur. All Rights Reserved.</span>
+                            <span class="d-none d-md-inline ms-2 text-white-50">| School Clerk & Administrative Management Portal</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="footer-social-links">
+                                <a href="tel:+919168434370" title="Call Us"><i class="bi bi-telephone-fill"></i></a>
+                                <a href="https://wa.me/919168434370" target="_blank" title="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+                                <a href="mailto:info@ganeshschool.com" title="Email Us"><i class="bi bi-envelope-fill"></i></a>
+                                <a href="javascript:void(0)" onclick="if(window.switchSection) switchSection('contact-section')" title="Contact Page"><i class="bi bi-geo-alt-fill"></i></a>
+                            </div>
+                            <button type="button" class="btn-back-to-top" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })" title="Back to Top">
+                                <i class="bi bi-arrow-up"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+
+            <!-- Website Down Side: Scrolling Bar for Success & Highlights -->
+            <div class="success-ticker-bar">
+                <div class="ticker-badge">
+                    <span class="pulse-dot"></span>
+                    <i class="bi bi-trophy-fill text-warning me-1"></i>
+                    <span>SUCCESS HIGHLIGHTS</span>
+                </div>
+                <div class="ticker-content-track">
+                    <div class="ticker-content-inner">
+                        <span class="ticker-item"><i class="bi bi-star-fill text-warning"></i> 100% 10th Board Exam Success (5 Consecutive Years)</span>
+                        <span class="ticker-item"><i class="bi bi-award-fill text-success"></i> Sneha Kulkarni: 90.00% (Board Distinction)</span>
+                        <span class="ticker-item"><i class="bi bi-award-fill text-success"></i> Pooja Joshi: 88.40% (Merit Topper)</span>
+                        <span class="ticker-item"><i class="bi bi-award-fill text-success"></i> Ganesh Patil: 85.50% (Distinction)</span>
+                        <span class="ticker-item"><i class="bi bi-mortarboard text-primary"></i> 22+ Active Student Registrations in Portal</span>
+                        <span class="ticker-item"><i class="bi bi-trophy text-warning"></i> Pandharpur Taluka Kho-Kho & Athletics Champions</span>
+                        <span class="ticker-item"><i class="bi bi-lightbulb text-info"></i> District Science Exhibition 1st Prize Winner</span>
+                        <span class="ticker-item"><i class="bi bi-book text-success"></i> 5,000+ Books Modern Digital Library</span>
+                        <span class="ticker-item"><i class="bi bi-bus-front text-warning"></i> GPS Monitored Safe School Bus Transport</span>
+                        <span class="ticker-item"><i class="bi bi-check2-circle text-primary"></i> Admissions Open 2026–27 (Nursery to 10th)</span>
+                        <!-- Duplicate for seamless infinite loop -->
+                        <span class="ticker-item"><i class="bi bi-star-fill text-warning"></i> 100% 10th Board Exam Success (5 Consecutive Years)</span>
+                        <span class="ticker-item"><i class="bi bi-award-fill text-success"></i> Sneha Kulkarni: 90.00% (Board Distinction)</span>
+                        <span class="ticker-item"><i class="bi bi-award-fill text-success"></i> Pooja Joshi: 88.40% (Merit Topper)</span>
+                        <span class="ticker-item"><i class="bi bi-award-fill text-success"></i> Ganesh Patil: 85.50% (Distinction)</span>
+                        <span class="ticker-item"><i class="bi bi-mortarboard text-primary"></i> 22+ Active Student Registrations in Portal</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="toast-container-custom"></div>
+
+    <!-- Bootstrap 5 Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

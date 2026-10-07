@@ -1,0 +1,87 @@
+@model Ganesh1.Models.Teacher
+
+@{
+    ViewData["Title"] = "Edit Faculty - Ganesh High School";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="custom-card">
+            <div class="custom-card-header">
+                <div class="card-title-group">
+                    <div class="card-icon-badge bg-info-subtle text-info">
+                        <i class="bi bi-pencil-fill"></i>
+                    </div>
+                    <div>
+                        <h3 class="card-title-text">Edit Faculty Profile</h3>
+                        <p class="card-subtitle-text">Update teacher details for @Model.FullName</p>
+                    </div>
+                </div>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left me-1"></i> Back to Faculty
+                </a>
+            </div>
+            <div class="custom-card-body">
+                <form asp-action="Edit" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label asp-for="FullName" class="form-label-custom"></label>
+                            <input asp-for="FullName" class="form-control-custom" required />
+                            <span asp-validation-for="FullName" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="SubjectExpertise" class="form-label-custom"></label>
+                            <input asp-for="SubjectExpertise" class="form-control-custom" required />
+                            <span asp-validation-for="SubjectExpertise" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Qualification" class="form-label-custom"></label>
+                            <input asp-for="Qualification" class="form-control-custom" required />
+                            <span asp-validation-for="Qualification" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="YearsOfExperience" class="form-label-custom"></label>
+                            <input asp-for="YearsOfExperience" type="number" class="form-control-custom" min="0" />
+                            <span asp-validation-for="YearsOfExperience" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Phone" class="form-label-custom"></label>
+                            <input asp-for="Phone" class="form-control-custom" required />
+                            <span asp-validation-for="Phone" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Email" class="form-label-custom"></label>
+                            <input asp-for="Email" type="email" class="form-control-custom" required />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="ProfessionalDescription" class="form-label-custom"></label>
+                            <textarea asp-for="ProfessionalDescription" class="form-control-custom" rows="3"></textarea>
+                            <span asp-validation-for="ProfessionalDescription" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                        <a asp-action="Index" class="btn btn-light">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="bi bi-check-lg me-1"></i> Update Faculty
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

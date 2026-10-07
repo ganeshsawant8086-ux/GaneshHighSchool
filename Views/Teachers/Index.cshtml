@@ -1,0 +1,65 @@
+@model IEnumerable<Ganesh1.Models.Teacher>
+
+@{
+    ViewData["Title"] = "Teachers & Faculty - Ganesh High School";
+}
+
+<div class="custom-card">
+    <div class="custom-card-header">
+        <div class="card-title-group">
+            <div class="card-icon-badge bg-info-subtle text-info">
+                <i class="bi bi-person-badge-fill"></i>
+            </div>
+            <div>
+                <h3 class="card-title-text">Faculty & Teaching Directory</h3>
+                <p class="card-subtitle-text">Dedicated teachers and department heads</p>
+            </div>
+        </div>
+        <div>
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-lg me-1"></i> + Register Faculty
+            </a>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary ms-2">
+                <i class="bi bi-grid-fill me-1"></i> Dashboard
+            </a>
+        </div>
+    </div>
+    <div class="custom-card-body">
+        <div class="teachers-grid">
+            @foreach (var t in Model)
+            {
+                <div class="teacher-card">
+                    <div class="teacher-header">
+                        <div class="teacher-avatar">
+                            @(t.FullName.Length > 0 ? t.FullName[0].ToString() : "T")
+                        </div>
+                        <div class="teacher-meta">
+                            <h5>@t.FullName</h5>
+                            <p class="teacher-subject">@t.SubjectExpertise Department</p>
+                        </div>
+                    </div>
+                    <div class="teacher-details">
+                        <div><i class="bi bi-mortarboard me-1 text-primary"></i> <strong>Qualification:</strong> @t.Qualification</div>
+                        <div><i class="bi bi-clock-history me-1 text-primary"></i> <strong>Experience:</strong> @t.YearsOfExperience Years</div>
+                        <div><i class="bi bi-envelope me-1 text-primary"></i> <strong>Email:</strong> @t.Email</div>
+                        <div><i class="bi bi-telephone me-1 text-primary"></i> <strong>Phone:</strong> @t.Phone</div>
+                        @if (!string.IsNullOrEmpty(t.ProfessionalDescription))
+                        {
+                            <div class="mt-2 text-muted small border-top pt-2">@t.ProfessionalDescription</div>
+                        }
+                    </div>
+                    <div class="mt-3 pt-2 border-top d-flex justify-content-end gap-2">
+                        <a asp-action="Edit" asp-route-id="@t.Id" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil me-1"></i> Edit
+                        </a>
+                        <form asp-action="Delete" asp-route-id="@t.Id" method="post" onsubmit="return confirm('Remove faculty member?');" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

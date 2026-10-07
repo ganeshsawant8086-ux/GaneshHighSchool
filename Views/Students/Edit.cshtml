@@ -1,0 +1,89 @@
+@model Ganesh1.Models.Student
+
+@{
+    ViewData["Title"] = "Edit Student - Ganesh High School";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="custom-card">
+            <div class="custom-card-header">
+                <div class="card-title-group">
+                    <div class="card-icon-badge bg-primary-subtle text-primary">
+                        <i class="bi bi-pencil-fill"></i>
+                    </div>
+                    <div>
+                        <h3 class="card-title-text">Edit Student Profile</h3>
+                        <p class="card-subtitle-text">Update enrollment details for Student #@Model.ID</p>
+                    </div>
+                </div>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left me-1"></i> Back to Students
+                </a>
+            </div>
+            <div class="custom-card-body">
+                <form asp-action="Edit" method="post">
+                    <input type="hidden" asp-for="ID" />
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="FirstName" class="form-label-custom"></label>
+                            <input asp-for="FirstName" class="form-control-custom" required />
+                            <span asp-validation-for="FirstName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="LastName" class="form-label-custom"></label>
+                            <input asp-for="LastName" class="form-control-custom" required />
+                            <span asp-validation-for="LastName" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="StudentGender" class="form-label-custom"></label>
+                            <select asp-for="StudentGender" class="form-select-custom" required>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <span asp-validation-for="StudentGender" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Standard" class="form-label-custom">Standard / Class</label>
+                            <select asp-for="Standard" class="form-select-custom" required>
+                                @for (int i = 1; i <= 10; i++)
+                                {
+                                    <option value="@i">Class @(i)th</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Standard" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Age" class="form-label-custom"></label>
+                            <input asp-for="Age" type="number" class="form-control-custom" min="4" max="22" />
+                            <span asp-validation-for="Age" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="MobileNumber" class="form-label-custom"></label>
+                            <input asp-for="MobileNumber" class="form-control-custom" required />
+                            <span asp-validation-for="MobileNumber" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                        <a asp-action="Index" class="btn btn-light">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="bi bi-check-lg me-1"></i> Update Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

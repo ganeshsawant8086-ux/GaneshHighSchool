@@ -1,0 +1,85 @@
+@model IEnumerable<Ganesh1.Models.Student>
+
+@{
+    ViewData["Title"] = "Students Directory - Ganesh High School";
+}
+
+<div class="custom-card">
+    <div class="custom-card-header">
+        <div class="card-title-group">
+            <div class="card-icon-badge bg-primary-subtle text-primary">
+                <i class="bi bi-people-fill"></i>
+            </div>
+            <div>
+                <h3 class="card-title-text">All Enrolled Students</h3>
+                <p class="card-subtitle-text">Complete student registry with active admission statuses</p>
+            </div>
+        </div>
+        <div>
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-person-plus-fill me-1"></i> + Register New Student
+            </a>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary ms-2">
+                <i class="bi bi-grid-fill me-1"></i> Dashboard
+            </a>
+        </div>
+    </div>
+    <div class="custom-card-body p-0">
+        <div class="table-responsive">
+            <table class="modern-table">
+                <thead>
+                    <tr>
+                        <th>Roll #</th>
+                        <th>Student Name</th>
+                        <th>Standard</th>
+                        <th>Gender</th>
+                        <th>Age</th>
+                        <th>Mobile Number</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var s in Model)
+                    {
+                        <tr>
+                            <td><span class="fw-bold text-primary">#@s.ID</span></td>
+                            <td>
+                                <div class="user-avatar-cell">
+                                    <div class="avatar-initials">@(s.FirstName.Length > 0 ? s.FirstName[0].ToString() : "S")@(s.LastName != null && s.LastName.Length > 0 ? s.LastName[0].ToString() : "")</div>
+                                    <div>
+                                        <p class="avatar-info-name">@s.FirstName @s.LastName</p>
+                                        <p class="avatar-info-sub">Student ID: @s.ID</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="badge-pill-custom badge-class">Class @(s.Standard)th</span></td>
+                            <td>
+                                <span class="badge-pill-custom @(s.StudentGender == "Male" ? "badge-gender-male" : "badge-gender-female")">
+                                    @s.StudentGender
+                                </span>
+                            </td>
+                            <td>@(s.Age ?? 14) yrs</td>
+                            <td>
+                                <a href="tel:@s.MobileNumber" class="text-decoration-none text-dark">
+                                    <i class="bi bi-telephone text-primary me-1"></i>@(s.MobileNumber ?? "N/A")
+                                </a>
+                            </td>
+                            <td>
+                                <div class="action-btn-group">
+                                    <a asp-action="Edit" asp-route-id="@s.ID" class="action-btn text-primary" title="Edit Student">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form asp-action="Delete" asp-route-id="@s.ID" method="post" onsubmit="return confirm('Are you sure you want to delete this student?');" style="display:inline;">
+                                        <button type="submit" class="action-btn text-danger action-btn-danger" title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

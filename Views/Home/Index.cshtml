@@ -1,0 +1,2393 @@
+@model Ganesh1.Models.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard - Ganesh High School";
+}
+
+<!-- Interactive Quick Module Tabs Navigation -->
+<div class="module-tabs">
+    <button class="module-tab-btn active" data-section="dashboard-section">
+        <i class="bi bi-grid-fill"></i> Overview
+    </button>
+    <button class="module-tab-btn" data-section="students-section">
+        <i class="bi bi-people-fill"></i> Students Data
+    </button>
+    <button class="module-tab-btn" data-section="teachers-section">
+        <i class="bi bi-person-badge-fill"></i> Teachers
+    </button>
+    <button class="module-tab-btn" data-section="passouts-section">
+        <i class="bi bi-trophy-fill"></i> 10th Board Passouts
+    </button>
+    <button class="module-tab-btn" data-section="classes-section">
+        <i class="bi bi-building"></i> Classes
+    </button>
+    <button class="module-tab-btn" data-section="subjects-section">
+        <i class="bi bi-book-half"></i> Subjects
+    </button>
+    <button class="module-tab-btn" data-section="attendance-section">
+        <i class="bi bi-calendar-check-fill"></i> Attendance
+    </button>
+    <button class="module-tab-btn" data-section="fees-section">
+        <i class="bi bi-wallet2"></i> Fee Structure
+    </button>
+    <button class="module-tab-btn" data-section="notices-section">
+        <i class="bi bi-megaphone-fill"></i> Notices
+    </button>
+    <button class="module-tab-btn" data-section="library-section">
+        <i class="bi bi-journal-bookmark-fill"></i> Library
+    </button>
+    <button class="module-tab-btn" data-section="events-section">
+        <i class="bi bi-calendar-event-fill"></i> Events
+    </button>
+    <button class="module-tab-btn" data-section="reports-section">
+        <i class="bi bi-graph-up"></i> Reports
+    </button>
+    <button class="module-tab-btn" data-section="stock-section">
+        <i class="bi bi-boxes text-warning"></i> Stock & Materials (Clerk)
+    </button>
+    <button class="module-tab-btn" data-section="contact-section">
+        <i class="bi bi-telephone-fill"></i> Contact
+    </button>
+</div>
+
+<!-- ==========================================
+     SECTION 1: DASHBOARD OVERVIEW
+     ========================================== -->
+<div id="dashboard-section" class="content-section active">
+    <!-- Hero Banner with Campus Photo (Red Square Section) -->
+    <div class="hero-banner">
+        <div class="hero-layout">
+            <div class="hero-content">
+                <div class="hero-pill">
+                    <i class="bi bi-patch-check-fill text-warning"></i>
+                    <span>Govt. Recognized • ISO 9001:2015 Certified School</span>
+                </div>
+                <h1 class="hero-title">Ganesh High School</h1>
+                <p class="hero-desc">
+                    Empowering students with knowledge, leadership, and integrity. Admissions open for Nursery to Class 10th for the academic year 2026–27.
+                </p>
+                <div class="hero-actions">
+                    <button type="button" class="hero-btn hero-btn-white" onclick="openAddStudentModal()">
+                        <i class="bi bi-person-plus-fill"></i>
+                        <span>+ Register Student</span>
+                    </button>
+                    <button type="button" class="hero-btn hero-btn-outline" onclick="switchSection('students-section')">
+                        <i class="bi bi-people"></i>
+                        <span>View Student Records</span>
+                    </button>
+                    <button type="button" class="hero-btn hero-btn-outline" onclick="openAddPassoutModal()">
+                        <i class="bi bi-trophy"></i>
+                        <span>+ Add Board Record</span>
+                    </button>
+                </div>
+            </div>
+            <!-- School Campus Photo (Right Side Red Square) -->
+            <div class="hero-image-wrapper">
+                <div class="hero-image-card">
+                    <img src="~/images/school-campus.jpg" alt="Ganesh High School Main Campus Building" class="hero-image" />
+                    <div class="hero-image-overlay">
+                        <div class="hero-image-badge">
+                            <i class="bi bi-building-fill text-warning me-1"></i>
+                            <span>Main Academic Campus Building &bull; Est. 1998</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Performance Stats Grid (Live Data from Database) -->
+    <div class="stats-grid">
+        <div class="stat-card" onclick="switchSection('students-section')" style="cursor: pointer;">
+            <div class="stat-info">
+                <span class="stat-label">Total Students</span>
+                <span class="stat-value" id="totalStudentsStat">@Model.TotalStudents</span>
+                <span class="stat-sub">
+                    <i class="bi bi-arrow-up-right"></i> Enrolled & Active
+                </span>
+            </div>
+            <div class="stat-icon-wrap stat-icon-blue">
+                <i class="bi bi-people-fill"></i>
+            </div>
+        </div>
+
+        <div class="stat-card" onclick="switchSection('teachers-section')" style="cursor: pointer;">
+            <div class="stat-info">
+                <span class="stat-label">Faculty Staff</span>
+                <span class="stat-value" id="totalTeachersStat">@Model.TotalTeachers</span>
+                <span class="stat-sub">
+                    <i class="bi bi-check-circle"></i> Experienced Teachers
+                </span>
+            </div>
+            <div class="stat-icon-wrap stat-icon-purple">
+                <i class="bi bi-person-badge-fill"></i>
+            </div>
+        </div>
+
+        <div class="stat-card" onclick="switchSection('passouts-section')" style="cursor: pointer;">
+            <div class="stat-info">
+                <span class="stat-label">10th Passouts</span>
+                <span class="stat-value" id="totalPassoutsStat">@Model.TotalPassouts</span>
+                <span class="stat-sub">
+                    <i class="bi bi-trophy"></i> Board Achievers
+                </span>
+            </div>
+            <div class="stat-icon-wrap stat-icon-green">
+                <i class="bi bi-mortarboard-fill"></i>
+            </div>
+        </div>
+
+        <div class="stat-card" onclick="switchSection('reports-section')" style="cursor: pointer;">
+            <div class="stat-info">
+                <span class="stat-label">Avg. Board Score</span>
+                <span class="stat-value">@(Model.AveragePassPercentage)%</span>
+                <span class="stat-sub">
+                    <i class="bi bi-star-fill text-warning"></i> 100% Pass Trend
+                </span>
+            </div>
+            <div class="stat-icon-wrap stat-icon-amber">
+                <i class="bi bi-award-fill"></i>
+            </div>
+        </div>
+
+        <!-- School Clerk: Stock & Material Inventory KPI -->
+        <div class="stat-card" onclick="switchSection('stock-section')" style="cursor: pointer;">
+            <div class="stat-info">
+                <span class="stat-label">Stock Materials (Clerk)</span>
+                <span class="stat-value">@Model.TotalStockItems <span class="fs-6 text-muted">SKUs</span></span>
+                <span class="stat-sub">
+                    <i class="bi bi-boxes text-warning"></i> @Model.TotalStockUnits Units • @(Model.LowStockAlerts > 0 ? Model.LowStockAlerts + " Low Stock" : "All Stocked")
+                </span>
+            </div>
+            <div class="stat-icon-wrap" style="background: rgba(245, 158, 11, 0.15); color: #d97706;">
+                <i class="bi bi-boxes"></i>
+            </div>
+        </div>
+    </div>
+    <div class="row g-4">
+        <!-- Recent Students Table Preview -->
+        <div class="col-lg-8">
+            <div class="custom-card">
+                <div class="custom-card-header">
+                    <div class="card-title-group">
+                        <div class="card-icon-badge bg-primary-subtle text-primary">
+                            <i class="bi bi-people-fill"></i>
+                        </div>
+                        <div>
+                            <h3 class="card-title-text">Recent Student Admissions (@Model.TotalStudents Registered)</h3>
+                            <p class="card-subtitle-text">Active database records with real-time sync</p>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="btn btn-sm btn-primary" onclick="openAddStudentModal()">
+                            <i class="bi bi-plus-lg me-1"></i> Add Student
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary ms-2" onclick="switchSection('students-section')">
+                            View All (@Model.TotalStudents)
+                        </button>
+                    </div>
+                </div>
+                <div class="custom-card-body p-0">
+                    <div class="table-responsive">
+                        <table class="modern-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Student Name</th>
+                                    <th>Class</th>
+                                    <th>Gender</th>
+                                    <th>Mobile</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Students.Any())
+                                {
+                                    @foreach (var s in Model.Students.Take(6))
+                                    {
+                                        <tr>
+                                            <td><span class="fw-bold text-primary">#@s.ID</span></td>
+                                            <td>
+                                                <div class="user-avatar-cell">
+                                                    <div class="avatar-initials">@(s.FirstName.Length > 0 ? s.FirstName[0].ToString() : "S")@(s.LastName != null && s.LastName.Length > 0 ? s.LastName[0].ToString() : "")</div>
+                                                    <div>
+                                                        <p class="avatar-info-name">@s.FirstName @s.LastName</p>
+                                                        <p class="avatar-info-sub">Age: @(s.Age ?? 14) yrs</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td><span class="badge-pill-custom badge-class">Class @(s.Standard)th</span></td>
+                                            <td>
+                                                <span class="badge-pill-custom @(s.StudentGender == "Male" ? "badge-gender-male" : "badge-gender-female")">
+                                                    @s.StudentGender
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="text-muted"><i class="bi bi-telephone me-1 text-primary"></i>@(s.MobileNumber ?? "N/A")</span>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center gap-1">
+                                                    <button type="button" class="btn btn-sm btn-light text-info" onclick="viewStudentRecord(@s.ID, '@(s.FirstName) @(s.LastName)', '@s.Standard', '@s.StudentGender', '@(s.Age ?? 14)', '@(s.MobileNumber ?? "N/A")')" title="View Student Record Profile">
+                                                        <i class="bi bi-eye"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm btn-light text-primary" onclick="viewStudentIDCard(@s.ID)" title="Preview Student ID Card">
+                                                        <i class="bi bi-person-badge"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm btn-light text-secondary" onclick="switchSection('students-section')" title="View in Students Directory">
+                                                        <i class="bi bi-arrow-right"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="6" class="text-center py-4 text-muted">
+                                            No student records found. Click "+ Add Student" to register!
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- School Material Stock & Store Room Status (Clerk Live Overview) - Perfectly Fills Gap -->
+            <div class="custom-card">
+                <div class="custom-card-header">
+                    <div class="card-title-group">
+                        <div class="card-icon-badge bg-warning-subtle text-warning">
+                            <i class="bi bi-boxes"></i>
+                        </div>
+                        <div>
+                            <h3 class="card-title-text">School Material Stock & Store Room Status (Clerk)</h3>
+                            <p class="card-subtitle-text">Connected to SQL Server (Database: StudentDB • Table: Stocks)</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-outline-warning text-dark fw-bold" onclick="switchSection('stock-section')">
+                        Open Stock Room <i class="bi bi-arrow-right ms-1"></i>
+                    </button>
+                </div>
+                <div class="custom-card-body">
+                    <!-- 4 Quick Clerk Mini Badges -->
+                    <div class="row g-2 mb-3">
+                        <div class="col-sm-3 col-6">
+                            <div class="p-2 border rounded-2 bg-light text-center">
+                                <span class="small text-muted d-block" style="font-size: 0.72rem;">Total Value</span>
+                                <strong class="text-dark small">₹@Model.TotalInventoryValue.ToString("N0")</strong>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-6">
+                            <div class="p-2 border rounded-2 bg-light text-center">
+                                <span class="small text-muted d-block" style="font-size: 0.72rem;">Total Volume</span>
+                                <strong class="text-primary small">@Model.TotalStockUnits Units</strong>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-6">
+                            <div class="p-2 border rounded-2 bg-light text-center">
+                                <span class="small text-muted d-block" style="font-size: 0.72rem;">Material SKUs</span>
+                                <strong class="text-dark small">@Model.TotalStockItems Items</strong>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-6">
+                            <div class="p-2 border rounded-2 bg-light text-center">
+                                <span class="small text-muted d-block" style="font-size: 0.72rem;">Low Stock</span>
+                                <strong class="small @(Model.LowStockAlerts > 0 ? "text-danger" : "text-success")">@(Model.LowStockAlerts > 0 ? Model.LowStockAlerts + " Alerts" : "Normal")</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 6 Sample Live Stock Items from SQL Database -->
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <strong class="small text-muted text-uppercase" style="font-size: 0.72rem;">Live Stock Inventory Samples:</strong>
+                        <span class="text-muted small" style="font-size: 0.72rem;"><i class="bi bi-database-check text-success me-1"></i>Live SQL Server Data</span>
+                    </div>
+                    <div class="row g-2">
+                        @foreach (var stk in Model.Stocks.Take(6))
+                        {
+                            <div class="col-sm-6">
+                                <div class="p-2 border rounded-2 bg-white d-flex align-items-center justify-content-between">
+                                    <div class="me-2 text-truncate" style="max-width: 190px;">
+                                        <strong class="d-block text-truncate small" title="@stk.ItemName">@stk.ItemName</strong>
+                                        <span class="text-muted" style="font-size: 0.68rem;">@stk.Category • @stk.Location</span>
+                                    </div>
+                                    <div class="text-end flex-shrink-0">
+                                        <span class="badge @(stk.Status == "In Stock" ? "bg-success-subtle text-success" : (stk.Status == "Low Stock" ? "bg-warning-subtle text-warning fw-bold" : "bg-danger-subtle text-danger"))" style="font-size: 0.68rem;">
+                                            @stk.Quantity @stk.Unit
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Campus Facilities & Academic Resource Highlights (Matching Right Side Infrastructure) -->
+                    <div class="mt-3 pt-3 border-top">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <strong class="small text-muted text-uppercase" style="font-size: 0.72rem;">Student Academic Support & Dispatch Amenities:</strong>
+                            <span class="badge bg-primary-subtle text-primary" style="font-size: 0.7rem;">Campus Ready</span>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-sm-6">
+                                <div class="p-2 border rounded-2 bg-light d-flex align-items-center gap-2">
+                                    <div class="card-icon-badge bg-primary-subtle text-primary" style="width: 32px; height: 32px; font-size: 0.95rem;">
+                                        <i class="bi bi-backpack4-fill"></i>
+                                    </div>
+                                    <div class="text-truncate">
+                                        <strong class="d-block text-truncate small">Free Textbook & Uniform Distribution</strong>
+                                        <span class="text-muted" style="font-size: 0.68rem;">Govt. aided complete kit sets issued at admission</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="p-2 border rounded-2 bg-light d-flex align-items-center gap-2">
+                                    <div class="card-icon-badge bg-success-subtle text-success" style="width: 32px; height: 32px; font-size: 0.95rem;">
+                                        <i class="bi bi-flask-fill"></i>
+                                    </div>
+                                    <div class="text-truncate">
+                                        <strong class="d-block text-truncate small">Science & STEM Lab Consumables</strong>
+                                        <span class="text-muted" style="font-size: 0.68rem;">Chemistry, Physics & Robotics apparatus stocked</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="p-2 border rounded-2 bg-light d-flex align-items-center gap-2">
+                                    <div class="card-icon-badge bg-warning-subtle text-warning" style="width: 32px; height: 32px; font-size: 0.95rem;">
+                                        <i class="bi bi-trophy-fill"></i>
+                                    </div>
+                                    <div class="text-truncate">
+                                        <strong class="d-block text-truncate small">Sports & Athletic Ground Equipment</strong>
+                                        <span class="text-muted" style="font-size: 0.68rem;">Kho-kho, football, cricket & badminton gear</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="p-2 border rounded-2 bg-light d-flex align-items-center gap-2">
+                                    <div class="card-icon-badge bg-danger-subtle text-danger" style="width: 32px; height: 32px; font-size: 0.95rem;">
+                                        <i class="bi bi-heart-pulse-fill"></i>
+                                    </div>
+                                    <div class="text-truncate">
+                                        <strong class="d-block text-truncate small">First-Aid Medical & Health Clinic</strong>
+                                        <span class="text-muted" style="font-size: 0.68rem;">24/7 on-campus first aid, paramedic & eye care</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Clerk Quick Action Bar -->
+                    <div class="mt-3 pt-2 d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <div class="text-muted small" style="font-size: 0.74rem;">
+                            <i class="bi bi-geo-alt-fill text-danger me-1"></i>
+                            <strong>Central Store:</strong> Room 104, Block-B &bull; Mon–Sat: 9:00 AM – 3:30 PM
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-sm btn-outline-warning text-dark fw-bold" onclick="openAddStockModal()">
+                                <i class="bi bi-plus-lg me-1"></i>+ Add SKU
+                            </button>
+                            <button type="button" class="btn btn-sm btn-primary" onclick="switchSection('stock-section')">
+                                <i class="bi bi-boxes me-1"></i>Manage All @Model.TotalStockItems Items
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Board Achievers & Facilities -->
+        <div class="col-lg-4">
+            <!-- 10th Board Achievers Card -->
+            <div class="custom-card">
+                <div class="custom-card-header">
+                    <div class="card-title-group">
+                        <div class="card-icon-badge bg-success-subtle text-success">
+                            <i class="bi bi-trophy-fill"></i>
+                        </div>
+                        <div>
+                            <h3 class="card-title-text">Top Board Toppers</h3>
+                            <p class="card-subtitle-text">10th Standard Distinction Stars</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-outline-success" onclick="openAddPassoutModal()">
+                        + Add
+                    </button>
+                </div>
+                <div class="custom-card-body">
+                    <div class="d-flex flex-column gap-3">
+                        @foreach (var p in Model.Passouts.Take(4))
+                        {
+                            <div class="p-3 rounded-3 border bg-light d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h6 class="fw-bold mb-1">@p.FullName</h6>
+                                    <div class="text-muted small">
+                                        <i class="bi bi-calendar3 me-1"></i> Class 10th (@p.Year) • @p.Specialization
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge-score-high badge-pill-custom fs-6 fw-bold">@p.Percentage%</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <button class="btn btn-outline-primary w-100 mt-3 btn-sm" onclick="switchSection('passouts-section')">
+                        View Complete Passout History <i class="bi bi-arrow-right ms-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Campus Facilities Card -->
+            <div class="custom-card">
+                <div class="custom-card-header">
+                    <div class="card-title-group">
+                        <div class="card-icon-badge bg-info-subtle text-info">
+                            <i class="bi bi-building-check"></i>
+                        </div>
+                        <div>
+                            <h3 class="card-title-text">Campus Highlights</h3>
+                            <p class="card-subtitle-text">State-of-the-art Infrastructure</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="custom-card-body p-0">
+                    <ul class="list-group list-group-flush small">
+                        <li class="list-group-item d-flex align-items-center gap-2 py-3">
+                            <i class="bi bi-tv text-primary fs-5"></i>
+                            <div>
+                                <strong>Interactive Smart Boards</strong>
+                                <div class="text-muted">Digital classrooms for visual multimedia learning</div>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center gap-2 py-3">
+                            <i class="bi bi-cpu text-info fs-5"></i>
+                            <div>
+                                <strong>Robotics & Computer Lab</strong>
+                                <div class="text-muted">50+ high-speed modern systems with internet</div>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center gap-2 py-3">
+                            <i class="bi bi-book text-success fs-5"></i>
+                            <div>
+                                <strong>Central Digital Library</strong>
+                                <div class="text-muted">5,000+ reference volumes, encyclopedias & journals</div>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center gap-2 py-3">
+                            <i class="bi bi-bus-front text-warning fs-5"></i>
+                            <div>
+                                <strong>GPS Tracked Safe Transport</strong>
+                                <div class="text-muted">School bus network spanning all local routes</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @{
+        var totalStudentsCount = Model.Students.Count;
+        var maleStudentsCount = Model.Students.Count(s => s.StudentGender == "Male");
+        var femaleStudentsCount = Model.Students.Count(s => s.StudentGender == "Female");
+        var maleRatio = totalStudentsCount > 0 ? (int)Math.Round((double)maleStudentsCount / totalStudentsCount * 100) : 52;
+        var femaleRatio = 100 - maleRatio;
+        var firstStudent = Model.Students.FirstOrDefault();
+
+        var primaryCount = Model.Students.Count(s => s.Standard >= 1 && s.Standard <= 4);
+        var middleCount = Model.Students.Count(s => s.Standard >= 5 && s.Standard <= 7);
+        var highCount = Model.Students.Count(s => s.Standard >= 8 && s.Standard <= 10);
+
+        var primaryPct = totalStudentsCount > 0 ? (int)Math.Round((double)primaryCount / totalStudentsCount * 100) : 35;
+        var middlePct = totalStudentsCount > 0 ? (int)Math.Round((double)middleCount / totalStudentsCount * 100) : 35;
+        var highPct = totalStudentsCount > 0 ? (int)Math.Round((double)highCount / totalStudentsCount * 100) : 30;
+    }
+
+    <!-- ========================================================
+         ROW 2: STUDENT DIGITAL ID CARD GENERATOR & BELL SCHEDULE
+         ======================================================== -->
+    <div class="row g-4 mt-1">
+        <!-- Student ID Card Generator & Live Preview -->
+        <div class="col-lg-5">
+            <div class="custom-card h-100">
+                <div class="custom-card-header">
+                    <div class="card-title-group">
+                        <div class="card-icon-badge bg-primary-subtle text-primary">
+                            <i class="bi bi-person-badge-fill"></i>
+                        </div>
+                        <div>
+                            <h3 class="card-title-text">Digital Student ID Card Generator</h3>
+                            <p class="card-subtitle-text">Smart PVC Identity Card with Barcode & Hologram</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-primary" onclick="printStudentIdCard()" title="Print or Save ID Card">
+                        <i class="bi bi-printer-fill me-1"></i> Print ID
+                    </button>
+                </div>
+                <div class="custom-card-body">
+                    <!-- Student Selector Toolbar -->
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted mb-1">Select Student to Generate ID Card:</label>
+                        <div class="d-flex align-items-center gap-2">
+                            <select id="idCardStudentSelect" class="form-select-custom flex-grow-1" onchange="updateStudentIdCard(this.value)">
+                                @foreach (var s in Model.Students)
+                                {
+                                    <option value="@s.ID"
+                                            data-name="@s.FirstName @s.LastName"
+                                            data-standard="@s.Standard"
+                                            data-gender="@s.StudentGender"
+                                            data-age="@(s.Age ?? 14)"
+                                            data-mobile="@(s.MobileNumber ?? "9876543210")">
+                                        #@s.ID - @s.FirstName @s.LastName (Class @(s.Standard)th)
+                                    </option>
+                                }
+                            </select>
+                            <button class="btn btn-outline-secondary btn-sm px-2" onclick="prevStudentIdCard()" title="Previous Student">
+                                <i class="bi bi-chevron-left"></i>
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm px-2" onclick="nextStudentIdCard()" title="Next Student">
+                                <i class="bi bi-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Live Card Canvas -->
+                    <div class="id-card-container" id="idCardContainer">
+                        <div class="id-card-header">
+                            <div class="d-flex align-items-center justify-content-center gap-2 mb-1">
+                                <i class="bi bi-mortarboard-fill fs-5 text-warning"></i>
+                                <h4 class="id-card-school-name">Ganesh High School</h4>
+                            </div>
+                            <div class="id-card-sub">Student Identity Smart Card • 2026-27</div>
+                        </div>
+                        <div class="id-card-body">
+                            <div class="id-card-photo-wrap">
+                                <div class="id-card-photo" id="idCardAvatar">
+                                    <span id="idCardAvatarText">@(firstStudent != null ? (firstStudent.FirstName.Length > 0 ? firstStudent.FirstName[0].ToString() : "S") + (firstStudent.LastName.Length > 0 ? firstStudent.LastName[0].ToString() : "") : "ST")</span>
+                                </div>
+                                <div class="id-hologram" title="Hologram Verified"></div>
+                            </div>
+
+                            <h5 class="id-card-name" id="idCardFullName">@(firstStudent != null ? firstStudent.FirstName + " " + firstStudent.LastName : "Student Name")</h5>
+                            <span class="badge bg-primary-subtle text-primary fw-semibold px-2 py-1 small rounded-pill">REGULAR STUDENT</span>
+
+                            <div class="id-card-meta-grid">
+                                <div class="id-meta-item">
+                                    <strong>Roll / ID:</strong>
+                                    <span id="idCardRollNo" class="text-dark fw-bold d-block">GHS-2026-@(firstStudent != null ? firstStudent.ID.ToString("D3") : "001")</span>
+                                </div>
+                                <div class="id-meta-item">
+                                    <strong>Class:</strong>
+                                    <span id="idCardStandard" class="text-dark fw-bold d-block">Class @(firstStudent != null ? firstStudent.Standard.ToString() : "10")th</span>
+                                </div>
+                                <div class="id-meta-item">
+                                    <strong>Gender:</strong>
+                                    <span id="idCardGender" class="text-dark fw-bold d-block">@(firstStudent != null ? firstStudent.StudentGender : "Male")</span>
+                                </div>
+                                <div class="id-meta-item">
+                                    <strong>Emergency:</strong>
+                                    <span id="idCardMobile" class="text-dark fw-bold d-block">@(firstStudent?.MobileNumber ?? "9876543210")</span>
+                                </div>
+                            </div>
+
+                            <div class="id-card-barcode-wrap">
+                                <div class="id-barcode"></div>
+                                <span class="small text-muted font-monospace" id="idCardBarcodeText">*GHS-2026-@(firstStudent != null ? firstStudent.ID.ToString("D4") : "0001")*</span>
+                                <span class="text-secondary" style="font-size: 0.65rem;">Principal Signature & Official Seal</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-between mt-3 pt-2 border-top">
+                        <span class="small text-muted"><i class="bi bi-shield-check text-success me-1"></i> ISO 9001:2015 Encrypted NFC/RFID Format</span>
+                        <button class="btn btn-sm btn-outline-primary" onclick="copyCardDetails()">
+                            <i class="bi bi-clipboard me-1"></i> Copy Info
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Today's Live Bell Schedule & Class Timetable -->
+        <div class="col-lg-7">
+            <div class="custom-card h-100">
+                <div class="custom-card-header">
+                    <div class="card-title-group">
+                        <div class="card-icon-badge bg-info-subtle text-info">
+                            <i class="bi bi-clock-history"></i>
+                        </div>
+                        <div>
+                            <h3 class="card-title-text">Today's Academic Bell Schedule</h3>
+                            <p class="card-subtitle-text">Real-time daily class timetable & teacher assignments</p>
+                        </div>
+                    </div>
+                    <span class="live-period-indicator">
+                        <span class="live-indicator-dot"></span>
+                        ACTIVE SESSION
+                    </span>
+                </div>
+                <div class="custom-card-body">
+                    <div class="period-timeline">
+                        <!-- Period 1 -->
+                        <div class="period-item">
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="period-time-badge"><i class="bi bi-clock me-1 text-primary"></i> 08:30 – 09:20</span>
+                                <div>
+                                    <h6 class="period-subject-title">Period 1: Mathematics (Algebra & Geometry)</h6>
+                                    <p class="period-teacher-sub"><i class="bi bi-person me-1"></i> Prof. Rajesh Sharma • Room 101</p>
+                                </div>
+                            </div>
+                            <span class="badge bg-secondary-subtle text-secondary small">Completed</span>
+                        </div>
+
+                        <!-- Period 2 -->
+                        <div class="period-item">
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="period-time-badge"><i class="bi bi-clock me-1 text-primary"></i> 09:25 – 10:15</span>
+                                <div>
+                                    <h6 class="period-subject-title">Period 2: English Language & Literature</h6>
+                                    <p class="period-teacher-sub"><i class="bi bi-person me-1"></i> Mrs. Sunita Verma • Room 102</p>
+                                </div>
+                            </div>
+                            <span class="badge bg-secondary-subtle text-secondary small">Completed</span>
+                        </div>
+
+                        <!-- Period 3 -->
+                        <div class="period-item">
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="period-time-badge"><i class="bi bi-clock me-1 text-primary"></i> 10:20 – 11:10</span>
+                                <div>
+                                    <h6 class="period-subject-title">Period 3: Science & Chemistry Lab</h6>
+                                    <p class="period-teacher-sub"><i class="bi bi-person me-1"></i> Dr. Anand Deshmukh • Science Lab 1</p>
+                                </div>
+                            </div>
+                            <span class="badge bg-secondary-subtle text-secondary small">Completed</span>
+                        </div>
+
+                        <!-- Recess Break -->
+                        <div class="period-item period-break-item">
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="period-time-badge text-warning"><i class="bi bi-cup-hot me-1 text-warning"></i> 11:10 – 11:40</span>
+                                <div>
+                                    <h6 class="period-subject-title text-warning-emphasis">Mid-Day Refreshment & Lunch Recess</h6>
+                                    <p class="period-teacher-sub text-muted">Central Cafeteria & Campus Playgrounds</p>
+                                </div>
+                            </div>
+                            <span class="badge bg-warning-subtle text-warning small">Recess</span>
+                        </div>
+
+                        <!-- Period 4 (Active) -->
+                        <div class="period-item active-period">
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="period-time-badge text-primary"><i class="bi bi-broadcast me-1 text-primary"></i> 11:40 – 12:30</span>
+                                <div>
+                                    <h6 class="period-subject-title text-primary">Period 4: Computer Science & AI / Robotics</h6>
+                                    <p class="period-teacher-sub"><i class="bi bi-person me-1"></i> Er. Sachin Patil • IT Lab 2</p>
+                                </div>
+                            </div>
+                            <span class="badge bg-success text-white small px-2 py-1"><i class="bi bi-play-circle-fill me-1"></i> In Progress</span>
+                        </div>
+
+                        <!-- Period 5 -->
+                        <div class="period-item">
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="period-time-badge"><i class="bi bi-clock me-1 text-primary"></i> 12:35 – 01:25</span>
+                                <div>
+                                    <h6 class="period-subject-title">Period 5: Social Studies & Civics</h6>
+                                    <p class="period-teacher-sub"><i class="bi bi-person me-1"></i> Ms. Priya Kulkarni • Room 204</p>
+                                </div>
+                            </div>
+                            <span class="badge bg-light text-muted small">Upcoming</span>
+                        </div>
+
+                        <!-- Period 6 -->
+                        <div class="period-item">
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="period-time-badge"><i class="bi bi-clock me-1 text-primary"></i> 01:30 – 02:15</span>
+                                <div>
+                                    <h6 class="period-subject-title">Period 6: Physical Education & Athletics</h6>
+                                    <p class="period-teacher-sub"><i class="bi bi-person me-1"></i> Coach Vikram Shinde • Sports Arena</p>
+                                </div>
+                            </div>
+                            <span class="badge bg-light text-muted small">Upcoming</span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-between mt-3 pt-2 border-top">
+                        <span class="small text-muted"><i class="bi bi-calendar3 me-1 text-primary"></i> Working Schedule: Mon - Sat (8:30 AM – 2:15 PM)</span>
+                        <button class="btn btn-outline-primary btn-sm" onclick="switchSection('timetable-section')">
+                            View Weekly Schedule <i class="bi bi-arrow-right ms-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================
+         ROW 3: DEMOGRAPHICS ANALYTICS & HALL OF FAME SPOTLIGHT
+         ======================================================== -->
+    <div class="row g-4 mt-1">
+        <!-- Academic Analytics & School Demographics -->
+        <div class="col-lg-7">
+            <div class="custom-card h-100">
+                <div class="custom-card-header">
+                    <div class="card-title-group">
+                        <div class="card-icon-badge bg-warning-subtle text-warning">
+                            <i class="bi bi-bar-chart-line-fill"></i>
+                        </div>
+                        <div>
+                            <h3 class="card-title-text">School Demographics & Performance Analytics</h3>
+                            <p class="card-subtitle-text">Enrolled student distribution, gender diversity, and board success</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="custom-card-body">
+                    <!-- 4 Quick Metric Boxes -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-6 col-md-3">
+                            <div class="analytics-metric-box">
+                                <div class="text-primary fs-4 fw-bold">@totalStudentsCount</div>
+                                <div class="small text-muted fw-semibold">Active Students</div>
+                                <div class="small text-success mt-1"><i class="bi bi-check-circle me-1"></i>100% Enrolled</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="analytics-metric-box">
+                                <div class="text-info fs-4 fw-bold">@Model.TotalTeachers</div>
+                                <div class="small text-muted fw-semibold">Faculty Staff</div>
+                                <div class="small text-primary mt-1">1 : 4.6 Ratio</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="analytics-metric-box">
+                                <div class="text-success fs-4 fw-bold">100%</div>
+                                <div class="small text-muted fw-semibold">Board Passing</div>
+                                <div class="small text-success mt-1">18 Distinctions</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="analytics-metric-box">
+                                <div class="text-warning fs-4 fw-bold">10</div>
+                                <div class="small text-muted fw-semibold">Active Grades</div>
+                                <div class="small text-muted mt-1">Std 1st to 10th</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gender Diversity Bar -->
+                    <div class="mb-4">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-gender-ambiguous text-primary"></i>
+                                <strong class="small">Gender Diversity Distribution</strong>
+                            </div>
+                            <div class="small">
+                                <span class="text-primary fw-bold me-2"><i class="bi bi-gender-male"></i> Boys: @maleStudentsCount (@maleRatio%)</span>
+                                <span class="text-danger fw-bold"><i class="bi bi-gender-female"></i> Girls: @femaleStudentsCount (@femaleRatio%)</span>
+                            </div>
+                        </div>
+                        <div class="ratio-bar-wrapper">
+                            <div class="ratio-bar-male" style="width: @(maleRatio)%;" title="Boys: @(maleRatio)%"></div>
+                            <div class="ratio-bar-female" style="width: @(femaleRatio)%;" title="Girls: @(femaleRatio)%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Grade Level Strengths -->
+                    <div>
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <strong class="small text-muted text-uppercase">Enrollment by Educational Tier</strong>
+                            <span class="small text-muted">@totalStudentsCount Students Total</span>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between small mb-1">
+                                <span>Primary Section (Classes 1st – 4th)</span>
+                                <span class="fw-bold">@primaryCount Students (@primaryPct%)</span>
+                            </div>
+                            <div class="grade-bar-track">
+                                <div class="grade-bar-fill" style="width: @(primaryPct)%; background: linear-gradient(90deg, #3b82f6, #60a5fa);"></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between small mb-1">
+                                <span>Middle School (Classes 5th – 7th)</span>
+                                <span class="fw-bold">@middleCount Students (@middlePct%)</span>
+                            </div>
+                            <div class="grade-bar-track">
+                                <div class="grade-bar-fill" style="width: @(middlePct)%; background: linear-gradient(90deg, #10b981, #34d399);"></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-1">
+                            <div class="d-flex justify-content-between small mb-1">
+                                <span>High School (Classes 8th – 10th)</span>
+                                <span class="fw-bold">@highCount Students (@highPct%)</span>
+                            </div>
+                            <div class="grade-bar-track">
+                                <div class="grade-bar-fill" style="width: @(highPct)%; background: linear-gradient(90deg, #8b5cf6, #a78bfa);"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Star Student of the Month & Hall of Fame -->
+        <div class="col-lg-5">
+            <div class="custom-card h-100">
+                <div class="custom-card-header">
+                    <div class="card-title-group">
+                        <div class="card-icon-badge bg-warning-subtle text-warning">
+                            <i class="bi bi-star-fill"></i>
+                        </div>
+                        <div>
+                            <h3 class="card-title-text">Star Students & Hall of Fame</h3>
+                            <p class="card-subtitle-text">Recognizing excellence in academics and sports</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="custom-card-body d-flex flex-column gap-3">
+                    <!-- Top Board Topper Spotlight -->
+                    <div class="star-student-card">
+                        <div class="star-badge-corner">
+                            <i class="bi bi-award-fill me-1"></i> Star of Year
+                        </div>
+                        <div class="d-flex align-items-center gap-3 mb-2">
+                            <div class="avatar-initials bg-warning text-dark fw-bold fs-5" style="width: 52px; height: 52px; border: 2px solid #f59e0b;">
+                                SK
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-0 text-dark">Sneha Kulkarni</h5>
+                                <span class="badge bg-warning text-dark small fw-bold">90.0% SSC Topper</span>
+                                <span class="text-muted small ms-1">• Class 10th</span>
+                            </div>
+                        </div>
+                        <p class="small text-muted mb-2">
+                            School 1st Rank with 100/100 in Mathematics and Distinction in Sanskrit & Science. Recipient of President's Medal for Academic Excellence.
+                        </p>
+                        <div class="d-flex align-items-center gap-2 small">
+                            <span class="badge bg-light text-dark border"><i class="bi bi-trophy text-warning me-1"></i> Gold Medal</span>
+                            <span class="badge bg-light text-dark border"><i class="bi bi-check2-all text-success me-1"></i> 100/100 Maths</span>
+                        </div>
+                    </div>
+
+                    <!-- Co-Curricular & Sports Stars -->
+                    <div class="p-3 rounded-3 border bg-light d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="avatar-initials bg-success-subtle text-success fw-bold" style="width: 44px; height: 44px;">
+                                PJ
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0">Pooja Joshi (88.4%)</h6>
+                                <div class="text-muted small">National Science Olympiad Gold Winner</div>
+                            </div>
+                        </div>
+                        <span class="badge bg-success-subtle text-success small fw-bold">Science Star</span>
+                    </div>
+
+                    <div class="p-3 rounded-3 border bg-light d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="avatar-initials bg-primary-subtle text-primary fw-bold" style="width: 44px; height: 44px;">
+                                GP
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0">Ganesh Patil (85.5%)</h6>
+                                <div class="text-muted small">District Badminton & Athletics Champion</div>
+                            </div>
+                        </div>
+                        <span class="badge bg-primary-subtle text-primary small fw-bold">Sports Star</span>
+                    </div>
+
+                    <button class="btn btn-outline-warning w-100 btn-sm text-dark fw-bold mt-auto" onclick="switchSection('passouts-section')">
+                        Explore Complete Hall of Fame <i class="bi bi-arrow-right ms-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================
+     SECTION 2: STUDENTS DIRECTORY & MANAGEMENT
+     ========================================== -->
+<div id="students-section" class="content-section">
+    <div class="custom-card">
+        <div class="custom-card-header">
+            <div class="card-title-group">
+                <div class="card-icon-badge bg-primary-subtle text-primary">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <div>
+                    <h3 class="card-title-text">Student Records Management</h3>
+                    <p class="card-subtitle-text">Real-time student registry directly connected to SQL Server</p>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <select class="form-select-custom" id="filterStudentStandard" style="width: 140px;" onchange="filterStudentsByClass(this.value)">
+                    <option value="all">All Classes</option>
+                    @for (int c = 1; c <= 10; c++)
+                    {
+                        <option value="@c">Class @(c)th</option>
+                    }
+                </select>
+                <button class="btn btn-primary" onclick="openAddStudentModal()">
+                    <i class="bi bi-person-plus-fill me-1"></i> + Add New Student
+                </button>
+            </div>
+        </div>
+        <div class="custom-card-body p-0">
+            <div class="table-responsive">
+                <table class="modern-table" id="studentsMainTable">
+                    <thead>
+                        <tr>
+                            <th>Roll / ID</th>
+                            <th>Student Name</th>
+                            <th>Class / Standard</th>
+                            <th>Gender</th>
+                            <th>Age</th>
+                            <th>Parent Phone</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentsTableBody">
+                        @foreach (var s in Model.Students)
+                        {
+                            <tr id="student-row-@s.ID" data-standard="@s.Standard">
+                                <td><span class="fw-bold text-primary">#@s.ID</span></td>
+                                <td>
+                                    <div class="user-avatar-cell">
+                                        <div class="avatar-initials">@(s.FirstName.Length > 0 ? s.FirstName[0].ToString() : "S")@(s.LastName != null && s.LastName.Length > 0 ? s.LastName[0].ToString() : "")</div>
+                                        <div>
+                                            <p class="avatar-info-name">@s.FirstName @s.LastName</p>
+                                            <p class="avatar-info-sub">Student ID: @s.ID</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge-pill-custom badge-class">Class @(s.Standard)th</span>
+                                </td>
+                                <td>
+                                    <span class="badge-pill-custom @(s.StudentGender == "Male" ? "badge-gender-male" : "badge-gender-female")">
+                                        @s.StudentGender
+                                    </span>
+                                </td>
+                                <td>@(s.Age ?? 14) yrs</td>
+                                <td>
+                                    <a href="tel:@s.MobileNumber" class="text-decoration-none text-dark">
+                                        <i class="bi bi-telephone text-primary me-1"></i>@(s.MobileNumber ?? "N/A")
+                                    </a>
+                                </td>
+                                <td>
+                                    <div class="action-btn-group">
+                                        <button type="button" class="action-btn text-info" onclick="viewStudentRecord(@s.ID, '@(s.FirstName) @(s.LastName)', '@s.Standard', '@s.StudentGender', '@(s.Age ?? 14)', '@(s.MobileNumber ?? "N/A")')" title="View Student Record Profile">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                        <a href="/Students/Edit/@s.ID" class="action-btn text-primary" title="Edit Student">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button type="button" class="action-btn text-danger action-btn-danger" onclick="deleteStudent(@s.ID)" title="Delete Student">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================
+     SECTION 3: TEACHERS DIRECTORY
+     ========================================== -->
+<div id="teachers-section" class="content-section">
+    <div class="custom-card">
+        <div class="custom-card-header">
+            <div class="card-title-group">
+                <div class="card-icon-badge bg-info-subtle text-info">
+                    <i class="bi bi-person-badge-fill"></i>
+                </div>
+                <div>
+                    <h3 class="card-title-text">Faculty & Teaching Staff</h3>
+                    <p class="card-subtitle-text">Qualified educators shaping academic excellence</p>
+                </div>
+            </div>
+            <div>
+                <button class="btn btn-primary" onclick="openAddTeacherModal()">
+                    <i class="bi bi-plus-lg me-1"></i> + Add Faculty Member
+                </button>
+            </div>
+        </div>
+        <div class="custom-card-body">
+            <div class="teachers-grid" id="teachersGridContainer">
+                @foreach (var t in Model.Teachers)
+                {
+                    <div class="teacher-card">
+                        <div class="teacher-header">
+                            <div class="teacher-avatar">
+                                @(t.FullName.Length > 0 ? t.FullName[0].ToString() : "T")
+                            </div>
+                            <div class="teacher-meta">
+                                <h5>@t.FullName</h5>
+                                <p class="teacher-subject">@t.SubjectExpertise Department</p>
+                            </div>
+                        </div>
+                        <div class="teacher-details">
+                            <div><i class="bi bi-mortarboard me-1 text-primary"></i> <strong>Qualification:</strong> @t.Qualification</div>
+                            <div><i class="bi bi-clock-history me-1 text-primary"></i> <strong>Experience:</strong> @t.YearsOfExperience Years</div>
+                            <div><i class="bi bi-envelope me-1 text-primary"></i> <strong>Email:</strong> @t.Email</div>
+                            <div><i class="bi bi-telephone me-1 text-primary"></i> <strong>Phone:</strong> @t.Phone</div>
+                            @if (!string.IsNullOrEmpty(t.ProfessionalDescription))
+                            {
+                                <div class="mt-2 text-muted small border-top pt-2">@t.ProfessionalDescription</div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================
+     SECTION 4: 10TH BOARD PASSOUTS
+     ========================================== -->
+<div id="passouts-section" class="content-section">
+    <div class="custom-card">
+        <div class="custom-card-header">
+            <div class="card-title-group">
+                <div class="card-icon-badge bg-success-subtle text-success">
+                    <i class="bi bi-trophy-fill"></i>
+                </div>
+                <div>
+                    <h3 class="card-title-text">10th Standard Board Examination History</h3>
+                    <p class="card-subtitle-text">Outstanding academic achievements & merit records</p>
+                </div>
+            </div>
+            <div>
+                <button class="btn btn-success" onclick="openAddPassoutModal()">
+                    <i class="bi bi-plus-lg me-1"></i> + Add Passout Record
+                </button>
+            </div>
+        </div>
+        <div class="custom-card-body">
+            <div class="passouts-grid" id="passoutsGridContainer">
+                @foreach (var p in Model.Passouts)
+                {
+                    <div class="passout-card-v2">
+                        <div class="passout-header">
+                            <span class="passout-year-badge">Batch of @p.Year</span>
+                            <span class="passout-score">@p.Percentage%</span>
+                        </div>
+                        <h4 class="passout-name">@p.FullName</h4>
+                        <div class="passout-spec">
+                            <i class="bi bi-award-fill text-warning"></i>
+                            <span>Specialization: @(p.Specialization ?? "General Studies")</span>
+                        </div>
+                        <div class="progress mb-3" style="height: 6px;">
+                            <div class="progress-bar bg-success" style="width: @(p.Percentage)%;"></div>
+                        </div>
+                        <div class="passout-contact">
+                            <span><i class="bi bi-envelope me-1"></i>@(p.ExampleContact ?? "Confidential")</span>
+                            <span class="badge bg-success-subtle text-success">
+                                @(p.Percentage >= 85 ? "Distinction" : "First Class")
+                            </span>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================
+     SECTION 5: CLASSES & SECTIONS
+     ========================================== -->
+<div id="classes-section" class="content-section">
+    <div class="custom-card">
+        <div class="custom-card-header">
+            <div class="card-title-group">
+                <div class="card-icon-badge bg-primary-subtle text-primary">
+                    <i class="bi bi-building"></i>
+                </div>
+                <div>
+                    <h3 class="card-title-text">Classes & Grade Roster</h3>
+                    <p class="card-subtitle-text">Nursery to Class 10th Divisions, Class Teachers & Rooms</p>
+                </div>
+            </div>
+        </div>
+        <div class="custom-card-body">
+            <div class="row g-3">
+                @{
+                    string[] teachersSample = { "Anita Joshi", "Ramesh Pawar", "Snehal Patil", "Vikas Kulkarni", "Meera Deshmukh" };
+                    for (int i = 1; i <= 10; i++)
+                    {
+                        var tName = teachersSample[(i - 1) % teachersSample.Length];
+                        <div class="col-md-6 col-lg-4">
+                            <div class="p-3 border rounded-3 bg-white shadow-sm h-100 d-flex flex-column justify-content-between">
+                                <div>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="badge bg-primary fs-6">Class @(i)th Standard</span>
+                                        <span class="badge bg-light text-dark border">Room #@(100 + i)</span>
+                                    </div>
+                                    <p class="mb-1"><strong>Class Teacher:</strong> @tName</p>
+                                    <p class="mb-1 text-muted small"><strong>Sections:</strong> Division A & Division B</p>
+                                    <p class="mb-2 text-muted small"><strong>Student Strength:</strong> ~45 Students per section</p>
+                                </div>
+                                <div class="pt-2 border-top d-flex gap-2">
+                                    <button class="btn btn-sm btn-outline-primary flex-grow-1" onclick="switchSection('students-section'); filterStudentsByClass('@i');">
+                                        View Class Students
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================
+     SECTION 6: SUBJECTS & CURRICULUM
+     ========================================== -->
+<div id="subjects-section" class="content-section">
+    <div class="custom-card">
+        <div class="custom-card-header">
+            <div class="card-title-group">
+                <div class="card-icon-badge bg-warning-subtle text-warning">
+                    <i class="bi bi-book-half"></i>
+                </div>
+                <div>
+                    <h3 class="card-title-text">Curriculum & Subjects</h3>
+                    <p class="card-subtitle-text">State Board & CBSE Aligned Comprehensive Academic Syllabus</p>
+                </div>
+            </div>
+        </div>
+        <div class="custom-card-body p-0">
+            <div class="table-responsive">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>Subject Code</th>
+                            <th>Subject Title</th>
+                            <th>Periods / Week</th>
+                            <th>Department Lead</th>
+                            <th>Annual Weightage</th>
+                            <th>Syllabus</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>SUB-101</strong></td>
+                            <td>Mathematics & Geometry</td>
+                            <td>6 Periods</td>
+                            <td>Anita Joshi (M.Sc)</td>
+                            <td>100 Marks (80 Theory + 20 Internal)</td>
+                            <td><span class="badge bg-success-subtle text-success">Updated 2026</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>SUB-102</strong></td>
+                            <td>Science & Technology (Physics/Chem/Bio)</td>
+                            <td>6 Periods</td>
+                            <td>Ramesh Pawar (M.Sc)</td>
+                            <td>100 Marks (Practical Lab Included)</td>
+                            <td><span class="badge bg-success-subtle text-success">Updated 2026</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>SUB-103</strong></td>
+                            <td>English Language & Literature</td>
+                            <td>5 Periods</td>
+                            <td>Snehal Patil (M.A.)</td>
+                            <td>100 Marks (Oral & Written)</td>
+                            <td><span class="badge bg-success-subtle text-success">Updated 2026</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>SUB-104</strong></td>
+                            <td>Computer Science & Coding</td>
+                            <td>4 Periods</td>
+                            <td>Vikas Kulkarni (MCA)</td>
+                            <td>100 Marks (Lab Hands-on)</td>
+                            <td><span class="badge bg-success-subtle text-success">Updated 2026</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>SUB-105</strong></td>
+                            <td>Social Science (History, Civics, Geography)</td>
+                            <td>5 Periods</td>
+                            <td>Meera Deshmukh (M.A.)</td>
+                            <td>100 Marks (Map Work & Projects)</td>
+                            <td><span class="badge bg-success-subtle text-success">Updated 2026</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================
+     SECTION 7: DAILY ATTENDANCE REGISTER
+     ========================================== -->
+<div id="attendance-section" class="content-section">
+    <div class="custom-card">
+        <div class="custom-card-header">
+            <div class="card-title-group">
+                <div class="card-icon-badge bg-info-subtle text-info">
+                    <i class="bi bi-calendar-check-fill"></i>
+                </div>
+                <div>
+                    <h3 class="card-title-text">Daily Attendance Register</h3>
+                    <p class="card-subtitle-text">Interactive mark presence & instant attendance statistics</p>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <div class="text-end">
+                    <div class="fw-bold fs-5 text-primary" id="todayPresentCount">@Model.Students.Count / @Model.Students.Count</div>
+                    <span class="badge bg-success" id="todayAttendancePercent">100% Rate</span>
+                </div>
+            </div>
+        </div>
+        <div class="custom-card-body p-0">
+            <div class="table-responsive">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Student Name</th>
+                            <th>Class</th>
+                            <th>Status Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var s in Model.Students)
+                        {
+                            <tr>
+                                <td>#@s.ID</td>
+                                <td><strong>@s.FirstName @s.LastName</strong></td>
+                                <td>Class @(s.Standard)th</td>
+                                <td>
+                                    <button class="btn btn-sm btn-success attendance-toggle-btn" onclick="toggleAttendance(this, '@s.FirstName @s.LastName')">
+                                        <i class="bi bi-check-circle me-1"></i> Present
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================
+     SECTION 8: EXAMS & RESULTS
+     ========================================== -->
+<div id="exams-section" class="content-section">
+    <div class="custom-card">
+        <div class="custom-card-header">
+            <div class="card-title-group">
+                <div class="card-icon-badge bg-danger-subtle text-danger">
+                    <i class="bi bi-pencil-square"></i>
+                </div>
+                <div>
+                    <h3 class="card-title-text">Examinations & Assessment Schedules</h3>
+                    <p class="card-subtitle-text">Mid-term, Prelim and Board Exam Timetables</p>
+                </div>
+            </div>
+        </div>
+        <div class="custom-card-body">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="border rounded-3 p-4 bg-light">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="fw-bold mb-0">Upcoming Semester 1 Exams</h5>
+                            <span class="badge bg-danger">October 2026</span>
+                        </div>
+                        <ul class="list-group list-group-flush bg-transparent">
+                            <li class="list-group-item bg-transparent d-flex justify-content-between">
+                                <span><i class="bi bi-calendar3 me-2 text-primary"></i> 15 Oct 2026</span>
+                                <strong>Mathematics</strong>
+                                <span>10:00 AM - 1:00 PM</span>
+                            </li>
+                            <li class="list-group-item bg-transparent d-flex justify-content-between">
+                                <span><i class="bi bi-calendar3 me-2 text-primary"></i> 17 Oct 2026</span>
+                                <strong>Science & Tech</strong>
+                                <span>10:00 AM - 1:00 PM</span>
+                            </li>
+                            <li class="list-group-item bg-transparent d-flex justify-content-between">
+                                <span><i class="bi bi-calendar3 me-2 text-primary"></i> 19 Oct 2026</span>
+                                <strong>English</strong>
+                                <span>10:00 AM - 1:00 PM</span>
+                            </li>
+                            <li class="list-group-item bg-transparent d-flex justify-content-between">
+                                <span><i class="bi bi-calendar3 me-2 text-primary"></i> 21 Oct 2026</span>
+                                <strong>Social Science</strong>
+                                <span>10:00 AM - 1:00 PM</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="border rounded-3 p-4 bg-light">
+                        <h5 class="fw-bold mb-3">Grading Scale & Performance Criteria</h5>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr><th>Score Range</th><th>Grade</th><th>Remarks</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>90% – 100%</td><td><span class="badge bg-success">A+</span></td><td>Outstanding Distinction</td></tr>
+                                <tr><td>75% – 89%</td><td><span class="badge bg-primary">A</span></td><td>First Class with Distinction</td></tr>
+                                <tr><td>60% – 74%</td><td><span class="badge bg-info">B</span></td><td>First Class</td></tr>
+                                <tr><td>45% – 59%</td><td><span class="badge bg-warning text-dark">C</span></td><td>Second Class</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================
+     SECTION 9: FEE STRUCTURE & CALCULATOR
+     ========================================== -->
+<div id="fees-section" class="content-section">
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="custom-card">
+                <div class="custom-card-header">
+                    <div class="card-title-group">
+                        <div class="card-icon-badge bg-success-subtle text-success">
+                            <i class="bi bi-wallet2"></i>
+                        </div>
+                        <div>
+                            <h3 class="card-title-text">Annual Tuition & Academic Fee Schedule</h3>
+                            <p class="card-subtitle-text">Transparent fee structure for Academic Year 2026–27</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="custom-card-body p-0">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>Class Range</th>
+                                <th>Tuition Fee</th>
+                                <th>Term 1 (50%)</th>
+                                <th>Term 2 (50%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Nursery – KG</strong></td>
+                                <td><span class="fw-bold text-success">₹15,000</span></td>
+                                <td>₹7,500</td>
+                                <td>₹7,500</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Class 1st – 5th</strong></td>
+                                <td><span class="fw-bold text-success">₹20,000</span></td>
+                                <td>₹10,000</td>
+                                <td>₹10,000</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Class 6th – 8th</strong></td>
+                                <td><span class="fw-bold text-success">₹25,000</span></td>
+                                <td>₹12,500</td>
+                                <td>₹12,500</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Class 9th – 10th</strong></td>
+                                <td><span class="fw-bold text-success">₹30,000</span></td>
+                                <td>₹15,000</td>
+                                <td>₹15,000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="custom-card">
+                <div class="custom-card-header">
+                    <div class="card-title-group">
+                        <div class="card-icon-badge bg-primary-subtle text-primary">
+                            <i class="bi bi-calculator-fill"></i>
+                        </div>
+                        <div>
+                            <h3 class="card-title-text">Fee Calculator</h3>
+                            <p class="card-subtitle-text">Calculate total annual fee with optional amenities</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="custom-card-body">
+                    <div class="mb-3">
+                        <label class="form-label-custom">Select Student Standard</label>
+                        <select class="form-select-custom" id="feeClassSelect">
+                            <option value="15000">Nursery - KG (₹15,000)</option>
+                            <option value="20000" selected>Class 1 - 5 (₹20,000)</option>
+                            <option value="25000">Class 6 - 8 (₹25,000)</option>
+                            <option value="30000">Class 9 - 10 (₹30,000)</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label-custom">Optional Add-ons</label>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="feeBusCheckbox">
+                            <label class="form-check-label" for="feeBusCheckbox">
+                                School Bus Transportation (+ ₹6,000 / yr)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="feeLabCheckbox">
+                            <label class="form-check-label" for="feeLabCheckbox">
+                                Science & Computer Lab Kit (+ ₹2,500 / yr)
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="p-3 rounded-3 bg-light border text-center my-3">
+                        <span class="text-muted small text-uppercase fw-bold">Calculated Annual Fee</span>
+                        <div class="display-6 fw-bold text-primary" id="feeTotalOutput">₹20,000</div>
+                    </div>
+
+                    <button class="btn btn-outline-primary w-100" onclick="window.print()">
+                        <i class="bi bi-printer me-1"></i> Print Fee Estimation Slip
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================
+     SECTION 10: NOTICES & CIRCULARS
+     ========================================== -->
+<div id="notices-section" class="content-section">
+    <div class="custom-card">
+        <div class="custom-card-header">
+            <div class="card-title-group">
+                <div class="card-icon-badge bg-primary-subtle text-primary">
+                    <i class="bi bi-megaphone-fill"></i>
+                </div>
+                <div>
+                    <h3 class="card-title-text">Official Notices & Circulars</h3>
+                    <p class="card-subtitle-text">Campus announcements, holiday alerts & examinations updates</p>
+                </div>
+            </div>
+            <button class="btn btn-sm btn-primary" data-bs-toggle="collapse" data-bs-target="#newNoticeCollapse">
+                <i class="bi bi-plus-lg me-1"></i> + Post New Notice
+            </button>
+        </div>
+        <div class="custom-card-body">
+            <!-- Inline Post Notice Form Collapse -->
+            <div class="collapse mb-4" id="newNoticeCollapse">
+                <div class="p-4 border rounded-3 bg-light">
+                    <h5 class="fw-bold mb-3">Post Announcement to School Board</h5>
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <label class="form-label-custom">Notice Title</label>
+                            <input type="text" class="form-control-custom" id="newNoticeTitle" placeholder="e.g. Science Fair Submission Deadline" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label-custom">Category</label>
+                            <select class="form-select-custom" id="newNoticeCategory">
+                                <option>Academic</option>
+                                <option>Urgent</option>
+                                <option>Holiday</option>
+                                <option>Sports</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label-custom">Notice Message</label>
+                            <textarea class="form-control-custom" id="newNoticeDesc" rows="3" placeholder="Provide complete notice details..."></textarea>
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-success" onclick="postNewNotice()">
+                                <i class="bi bi-check-lg me-1"></i> Publish Notice
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notices List Container -->
+            <div id="noticesListContainer">
+                <div class="custom-card notice-item-card mb-3">
+                    <div class="custom-card-body d-flex gap-3 align-items-start">
+                        <div class="card-icon-badge bg-danger-subtle text-danger">
+                            <i class="bi bi-exclamation-circle-fill"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                <h5 class="fw-bold mb-0">Admissions Open for Academic Session 2026–27</h5>
+                                <span class="badge bg-danger">Urgent / Admission</span>
+                            </div>
+                            <p class="text-muted small mb-1">
+                                Applications are invited for Nursery to Class 10th. Limited seats available in division A & B. Submit documents online or visit the administrative block.
+                            </p>
+                            <span class="text-secondary small"><i class="bi bi-clock me-1"></i> Published Today</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="custom-card notice-item-card mb-3">
+                    <div class="custom-card-body d-flex gap-3 align-items-start">
+                        <div class="card-icon-badge bg-primary-subtle text-primary">
+                            <i class="bi bi-trophy-fill"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                <h5 class="fw-bold mb-0">Annual Sports Meet 2026 Registrations Open</h5>
+                                <span class="badge bg-primary">Sports</span>
+                            </div>
+                            <p class="text-muted small mb-1">
+                                Cricket, Athletics (100m, 400m), Kabaddi, and Chess tournaments scheduled for the last week of October. Interested students register with your PE teacher.
+                            </p>
+                            <span class="text-secondary small"><i class="bi bi-clock me-1"></i> Published 2 days ago</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="custom-card notice-item-card mb-3">
+                    <div class="custom-card-body d-flex gap-3 align-items-start">
+                        <div class="card-icon-badge bg-success-subtle text-success">
+                            <i class="bi bi-people-fill"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                <h5 class="fw-bold mb-0">Parent-Teacher Association (PTA) Meeting</h5>
+                                <span class="badge bg-success">Academic</span>
+                            </div>
+                            <p class="text-muted small mb-1">
+                                Quarterly progress discussion on student academic growth, homework compliance and upcoming mid-term exams. All parents are requested to attend.
+                            </p>
+                            <span class="text-secondary small"><i class="bi bi-clock me-1"></i> Published 4 days ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================
+     SECTION 11: LIBRARY CATALOG
+     ========================================== -->
+<div id="library-section" class="content-section">
+    <div class="custom-card">
+        <div class="custom-card-header">
+            <div class="card-title-group">
+                <div class="card-icon-badge bg-warning-subtle text-warning">
+                    <i class="bi bi-journal-bookmark-fill"></i>
+                </div>
+                <div>
+                    <h3 class="card-title-text">Digital & Physical Library Catalog</h3>
+                    <p class="card-subtitle-text">5,000+ Educational books, reference guides, and literature</p>
+                </div>
+            </div>
+        </div>
+        <div class="custom-card-body p-0">
+            <div class="table-responsive">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>Book ID</th>
+                            <th>Book Title</th>
+                            <th>Author</th>
+                            <th>Category</th>
+                            <th>Available Copies</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>BK-1001</strong></td>
+                            <td>Modern Mathematics for Class 10</td>
+                            <td>R.D. Sharma</td>
+                            <td>Mathematics</td>
+                            <td>14 copies</td>
+                            <td><span class="badge bg-success">Available</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>BK-1002</strong></td>
+                            <td>Concepts of Physics (Vol 1)</td>
+                            <td>H.C. Verma</td>
+                            <td>Science</td>
+                            <td>8 copies</td>
+                            <td><span class="badge bg-success">Available</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>BK-1003</strong></td>
+                            <td>Wings of Fire: An Autobiography</td>
+                            <td>Dr. A.P.J. Abdul Kalam</td>
+                            <td>Inspirational</td>
+                            <td>5 copies</td>
+                            <td><span class="badge bg-success">Available</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>BK-1004</strong></td>
+                            <td>Oxford Advanced Learner's Dictionary</td>
+                            <td>Oxford University Press</td>
+                            <td>Reference</td>
+                            <td>12 copies</td>
+                            <td><span class="badge bg-success">Available</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>BK-1005</strong></td>
+                            <td>Computer Science with Python</td>
+                            <td>Sumita Arora</td>
+                            <td>Technology</td>
+                            <td>20 copies</td>
+                            <td><span class="badge bg-success">Available</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================
+     SECTION 12: SCHOOL EVENTS
+     ========================================== -->
+<div id="events-section" class="content-section">
+    <div class="custom-card">
+        <div class="custom-card-header">
+            <div class="card-title-group">
+                <div class="card-icon-badge bg-primary-subtle text-primary">
+                    <i class="bi bi-calendar-event-fill"></i>
+                </div>
+                <div>
+                    <h3 class="card-title-text">Annual School Events & Co-Curricular Calendar</h3>
+                    <p class="card-subtitle-text">Celebrations, exhibitions and sports galas</p>
+                </div>
+            </div>
+        </div>
+        <div class="custom-card-body">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="p-4 border rounded-3 bg-light h-100">
+                        <span class="badge bg-primary mb-2">October 2026</span>
+                        <h5 class="fw-bold">Annual Sports Gala</h5>
+                        <p class="text-muted small">Track events, inter-house football, kabaddi and badminton championships with grand trophy presentation.</p>
+                        <div class="fw-bold text-dark small"><i class="bi bi-geo-alt me-1 text-danger"></i> School Athletic Stadium</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-4 border rounded-3 bg-light h-100">
+                        <span class="badge bg-success mb-2">November 2026</span>
+                        <h5 class="fw-bold">National Science Exhibition</h5>
+                        <p class="text-muted small">Student working models, robotics projects, and environmental sustainability presentations.</p>
+                        <div class="fw-bold text-dark small"><i class="bi bi-geo-alt me-1 text-danger"></i> Central Auditorium</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-4 border rounded-3 bg-light h-100">
+                        <span class="badge bg-warning text-dark mb-2">December 2026</span>
+                        <h5 class="fw-bold">Annual Day & Cultural Fest</h5>
+                        <p class="text-muted small">Dance drama, classical music, drama staging and academic excellence award distributions.</p>
+                        <div class="fw-bold text-dark small"><i class="bi bi-geo-alt me-1 text-danger"></i> Main Amphitheater</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================
+     SECTION 13: REPORTS & ANALYTICS
+     ========================================== -->
+<div id="reports-section" class="content-section">
+    <div class="custom-card">
+        <div class="custom-card-header">
+            <div class="card-title-group">
+                <div class="card-icon-badge bg-info-subtle text-info">
+                    <i class="bi bi-graph-up-arrow"></i>
+                </div>
+                <div>
+                    <h3 class="card-title-text">Academic Analytics & Performance Metrics</h3>
+                    <p class="card-subtitle-text">Statistical insights across examinations, admissions and gender parity</p>
+                </div>
+            </div>
+        </div>
+        <div class="custom-card-body">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="border rounded-3 p-4 text-center bg-light">
+                        <h6 class="text-muted text-uppercase fw-bold">Board Exam Pass Rate</h6>
+                        <div class="display-4 fw-bold text-success my-2">100%</div>
+                        <p class="text-muted small mb-0">Consistent 100% passing record for 10th standard board exams over the past 5 consecutive years.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="border rounded-3 p-4 text-center bg-light">
+                        <h6 class="text-muted text-uppercase fw-bold">Distinction Rate</h6>
+                        <div class="display-4 fw-bold text-primary my-2">82.4%</div>
+                        <p class="text-muted small mb-0">Over 80% of students secure distinction grades (above 75%) in annual board evaluations.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="border rounded-3 p-4 text-center bg-light">
+                        <h6 class="text-muted text-uppercase fw-bold">Teacher-Student Ratio</h6>
+                        <div class="display-4 fw-bold text-indigo my-2">1 : 24</div>
+                        <p class="text-muted small mb-0">Personalized mentorship and attentive support for every individual student.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================
+     SECTION 14: CONTACT & ADMISSIONS
+     ========================================== -->
+<div id="contact-section" class="content-section">
+    <div class="custom-card">
+        <div class="custom-card-header">
+            <div class="card-title-group">
+                <div class="card-icon-badge bg-primary-subtle text-primary">
+                    <i class="bi bi-telephone-fill"></i>
+                </div>
+                <div>
+                    <h3 class="card-title-text">Campus Location & Contact Information</h3>
+                    <p class="card-subtitle-text">Get in touch with the admissions office and administrative staff</p>
+                </div>
+            </div>
+        </div>
+        <div class="custom-card-body">
+            <div class="row g-4">
+                <div class="col-lg-5">
+                    <div class="p-3 p-md-4 bg-light rounded-3 border h-100">
+                        <h4 class="fw-bold mb-3">Ganesh High School</h4>
+                        <p class="mb-3">
+                            <i class="bi bi-geo-alt-fill text-danger me-2"></i>
+                            <strong>Campus Address:</strong><br />
+                            Near Main Road, Pandharpur, Maharashtra – 413304
+                        </p>
+                        <p class="mb-3">
+                            <i class="bi bi-telephone-fill text-primary me-2"></i>
+                            <strong>Admissions Helpline:</strong><br />
+                            <a href="tel:+919168434370" class="text-decoration-none text-dark fw-bold d-inline-block mt-1">+91 9168434370</a>
+                        </p>
+                        <p class="mb-3">
+                            <i class="bi bi-envelope-fill text-success me-2"></i>
+                            <strong>Official Email:</strong><br />
+                            <a href="mailto:info@ganeshschool.com" class="text-decoration-none text-dark d-inline-block mt-1">info@ganeshschool.com</a>
+                        </p>
+                        <p class="mb-3">
+                            <i class="bi bi-clock-fill text-warning me-2"></i>
+                            <strong>Office Working Hours:</strong><br />
+                            Monday to Saturday: 8:30 AM – 4:30 PM
+                        </p>
+                        <div class="d-flex gap-2 flex-wrap pt-2">
+                            <a href="tel:+919168434370" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-telephone-fill me-1"></i> Call Now
+                            </a>
+                            <a href="https://wa.me/919168434370" target="_blank" class="btn btn-sm btn-outline-success">
+                                <i class="bi bi-whatsapp me-1"></i> WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-7">
+                    <div class="p-4 bg-white rounded-3 border">
+                        <h5 class="fw-bold mb-3">Online Admission Inquiry</h5>
+                        <form onsubmit="event.preventDefault(); showToast('Inquiry submitted! Our admissions counselor will call you within 24 hours.', 'success'); this.reset();">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label-custom">Parent / Guardian Name</label>
+                                    <input type="text" class="form-control-custom" required placeholder="Enter your full name" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-custom">Contact Mobile Number</label>
+                                    <input type="tel" class="form-control-custom" required placeholder="+91 98765 43210" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-custom">Student Seeking Class</label>
+                                    <select class="form-select-custom">
+                                        <option>Nursery - KG</option>
+                                        <option>Class 1 - 5</option>
+                                        <option>Class 6 - 8</option>
+                                        <option>Class 9 - 10</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-custom">Email Address</label>
+                                    <input type="email" class="form-control-custom" placeholder="name@example.com" />
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label-custom">Any Questions / Remarks</label>
+                                    <textarea class="form-control-custom" rows="3" placeholder="Tell us about the student or request a campus tour..."></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary px-4">
+                                        <i class="bi bi-send-fill me-1"></i> Send Admission Inquiry
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================================
+     SECTION 15: SCHOOL CLERK STOCK & MATERIAL INVENTORY
+     ======================================================== -->
+<div id="stock-section" class="content-section">
+    <div class="custom-card mb-4 print-stock-area">
+        <div class="custom-card-header">
+            <div class="card-title-group">
+                <div class="card-icon-badge bg-warning-subtle text-warning">
+                    <i class="bi bi-boxes"></i>
+                </div>
+                <div>
+                    <h3 class="card-title-text">School Material & Stock Inventory</h3>
+                    <p class="card-subtitle-text">School Clerk Central Store Management • Connected to SQL Server</p>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <button class="btn btn-outline-secondary btn-sm" onclick="printStockInventory()">
+                    <i class="bi bi-printer me-1"></i> Print Stock Sheet
+                </button>
+                <button class="btn btn-warning text-dark fw-bold btn-sm" onclick="openAddStockModal()">
+                    <i class="bi bi-plus-circle-fill me-1"></i> + Add School Material
+                </button>
+            </div>
+        </div>
+
+        <!-- 4 Clerk Metric Summary Boxes -->
+        <div class="custom-card-body border-bottom bg-light py-3">
+            <div class="row g-3">
+                <div class="col-6 col-lg-3">
+                    <div class="p-3 bg-white rounded-3 border shadow-xs d-flex align-items-center gap-3">
+                        <div class="stat-icon-badge bg-success-subtle text-success p-2 rounded-circle">
+                            <i class="bi bi-currency-rupee fs-4"></i>
+                        </div>
+                        <div>
+                            <span class="text-muted small text-uppercase fw-semibold d-block">Inventory Value</span>
+                            <span class="fs-5 fw-bold text-dark" id="stockTotalValue">₹@Model.TotalInventoryValue.ToString("N2")</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <div class="p-3 bg-white rounded-3 border shadow-xs d-flex align-items-center gap-3">
+                        <div class="stat-icon-badge bg-primary-subtle text-primary p-2 rounded-circle">
+                            <i class="bi bi-box-seam-fill fs-4"></i>
+                        </div>
+                        <div>
+                            <span class="text-muted small text-uppercase fw-semibold d-block">Total Items</span>
+                            <span class="fs-5 fw-bold text-primary" id="stockTotalItems">@Model.TotalStockItems SKUs</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <div class="p-3 bg-white rounded-3 border shadow-xs d-flex align-items-center gap-3">
+                        <div class="stat-icon-badge bg-info-subtle text-info p-2 rounded-circle">
+                            <i class="bi bi-stack fs-4"></i>
+                        </div>
+                        <div>
+                            <span class="text-muted small text-uppercase fw-semibold d-block">Units in Store</span>
+                            <span class="fs-5 fw-bold text-dark" id="stockTotalUnits">@Model.TotalStockUnits Units</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <div class="p-3 bg-white rounded-3 border shadow-xs d-flex align-items-center gap-3">
+                        <div class="stat-icon-badge bg-danger-subtle text-danger p-2 rounded-circle">
+                            <i class="bi bi-exclamation-octagon-fill fs-4"></i>
+                        </div>
+                        <div>
+                            <span class="text-muted small text-uppercase fw-semibold d-block">Low Stock Warnings</span>
+                            <span class="fs-5 fw-bold @(Model.LowStockAlerts > 0 ? "text-danger" : "text-success")" id="stockLowCount">@Model.LowStockAlerts Items</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="custom-card-body pb-0 pt-3">
+            <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+                <div class="d-flex align-items-center gap-2 flex-wrap" id="stockCategoryFilterButtons">
+                    <button class="btn btn-sm btn-dark active stock-filter-btn" onclick="filterStockCategory('all', this)">All Materials (@Model.TotalStockItems)</button>
+                    <button class="btn btn-sm btn-outline-secondary stock-filter-btn" onclick="filterStockCategory('Stationery', this)">Stationery</button>
+                    <button class="btn btn-sm btn-outline-secondary stock-filter-btn" onclick="filterStockCategory('Textbooks', this)">Textbooks</button>
+                    <button class="btn btn-sm btn-outline-secondary stock-filter-btn" onclick="filterStockCategory('Uniforms', this)">Uniforms</button>
+                    <button class="btn btn-sm btn-outline-secondary stock-filter-btn" onclick="filterStockCategory('Science Lab', this)">Science Lab</button>
+                    <button class="btn btn-sm btn-outline-secondary stock-filter-btn" onclick="filterStockCategory('Sports Equipment', this)">Sports</button>
+                    <button class="btn btn-sm btn-outline-secondary stock-filter-btn" onclick="filterStockCategory('Exam Materials', this)">Exams</button>
+                    <button class="btn btn-sm btn-outline-secondary stock-filter-btn" onclick="filterStockCategory('Classroom Furniture', this)">Furniture</button>
+                    <button class="btn btn-sm btn-outline-secondary stock-filter-btn" onclick="filterStockCategory('IT & Electronics', this)">IT & Tech</button>
+                </div>
+                <div style="min-width: 260px;">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                        <input type="text" id="stockTableSearch" class="form-control" placeholder="Search material name, SKU, vendor..." oninput="searchStockTable(this.value)" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stock Materials Table -->
+        <div class="custom-card-body p-0 mt-3">
+            <div class="table-responsive">
+                <table class="modern-table" id="stockTable">
+                    <thead>
+                        <tr>
+                            <th>Item Code / SKU</th>
+                            <th>Material Name & Category</th>
+                            <th>Storage Location</th>
+                            <th>Quantity In Store</th>
+                            <th>Unit Price & Value</th>
+                            <th>Stock Status</th>
+                            <th class="text-end">Clerk Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stockTableBody">
+                        @if (Model.Stocks.Any())
+                        {
+                            @foreach (var item in Model.Stocks)
+                            {
+                                <tr data-id="@item.Id" data-category="@item.Category" data-name="@item.ItemName.ToLower()" data-sku="@item.ItemCode.ToLower()">
+                                    <td>
+                                        <span class="badge bg-light text-dark font-monospace border fw-bold">@item.ItemCode</span>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <strong class="d-block text-dark stock-item-name">@item.ItemName</strong>
+                                            <div class="d-flex align-items-center gap-1 mt-1">
+                                                <span class="badge bg-secondary-subtle text-secondary small">@item.Category</span>
+                                                @if (!string.IsNullOrEmpty(item.Supplier))
+                                                {
+                                                    <span class="text-muted small" style="font-size: 0.72rem;">• Vendor: @item.Supplier</span>
+                                                }
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="text-secondary small"><i class="bi bi-geo-alt me-1 text-danger"></i>@item.Location</span>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                                <strong class="text-dark stock-qty-text" id="stockQty-@item.Id">@item.Quantity @item.Unit</strong>
+                                                <span class="text-muted small" style="font-size: 0.7rem;">Min: @item.MinThreshold</span>
+                                            </div>
+                                            @{
+                                                var fillPct = Math.Min(100, item.MinThreshold > 0 ? (int)Math.Round((double)item.Quantity / (item.MinThreshold * 2) * 100) : 100);
+                                                var barColor = item.Quantity <= 0 ? "bg-danger" : (item.Quantity <= item.MinThreshold ? "bg-warning" : "bg-success");
+                                            }
+                                            <div class="progress" style="height: 5px;">
+                                                <div class="progress-bar @barColor" id="stockBar-@item.Id" style="width: @(fillPct)%;"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <strong class="text-dark" id="stockVal-@item.Id">₹@(item.TotalValue.ToString("N0"))</strong>
+                                            <div class="text-muted small" style="font-size: 0.72rem;">(₹@item.UnitPrice / @item.Unit)</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge @(item.Status == "In Stock" ? "bg-success-subtle text-success" : (item.Status == "Low Stock" ? "bg-warning-subtle text-warning fw-bold" : "bg-danger-subtle text-danger")) rounded-pill px-2 py-1" id="stockStatus-@item.Id">
+                                            @if (item.Status == "Low Stock")
+                                            {
+                                                <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                                            }
+                                            @item.Status
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-secondary" onclick="quickAdjustStock(@item.Id, -1)" title="Issue 1 unit (-1)">
+                                                <i class="bi bi-dash"></i>
+                                            </button>
+                                            <button class="btn btn-outline-secondary" onclick="quickAdjustStock(@item.Id, 1)" title="Add 1 unit (+1)">
+                                                <i class="bi bi-plus"></i>
+                                            </button>
+                                            <button class="btn btn-outline-primary" onclick="openRestockModal(@item.Id, '@item.ItemName.Replace("'", "\\'")')" title="Restock Bulk Quantity">
+                                                <i class="bi bi-arrow-repeat"></i> Restock
+                                            </button>
+                                            <button class="btn btn-outline-danger" onclick="deleteStockItem(@item.Id, '@item.ItemName.Replace("'", "\\'")')" title="Delete Material">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center py-4 text-muted">
+                                    No material items found in stock. Click "+ Add School Material" to begin!
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================
+     MODALS: ADD STUDENT, ADD TEACHER, ADD PASSOUT, ADD STOCK
+     ========================================== -->
+
+<!-- Modal: Add Student -->
+<div id="addStudentModal" class="modal-backdrop-custom">
+    <div class="modal-dialog-custom">
+        <div class="modal-header-custom">
+            <h5 class="modal-title-custom"><i class="bi bi-person-plus-fill text-primary me-2"></i> Register New Student</h5>
+            <button class="modal-close-btn" onclick="closeAddStudentModal()">&times;</button>
+        </div>
+        <div class="modal-body-custom">
+            <form id="quickStudentForm">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label-custom">First Name *</label>
+                        <input type="text" id="stuFirstName" class="form-control-custom" required placeholder="e.g. Ramesh" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-custom">Last Name *</label>
+                        <input type="text" id="stuLastName" class="form-control-custom" required placeholder="e.g. Shinde" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-custom">Gender *</label>
+                        <select id="stuGender" class="form-select-custom" required>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-custom">Standard / Class *</label>
+                        <select id="stuStandard" class="form-select-custom" required>
+                            @for (int c = 1; c <= 10; c++)
+                            {
+                                <option value="@c">Class @(c)th</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-custom">Age (Years)</label>
+                        <input type="number" id="stuAge" class="form-control-custom" min="4" max="22" value="15" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-custom">Mobile Number *</label>
+                        <input type="tel" id="stuMobile" class="form-control-custom" required placeholder="9876543210" />
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <button type="button" class="btn btn-light" onclick="closeAddStudentModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="bi bi-check-lg me-1"></i> Save to Database
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Add Teacher -->
+<div id="addTeacherModal" class="modal-backdrop-custom">
+    <div class="modal-dialog-custom">
+        <div class="modal-header-custom">
+            <h5 class="modal-title-custom"><i class="bi bi-person-badge-fill text-info me-2"></i> Register Faculty Member</h5>
+            <button class="modal-close-btn" onclick="closeAddTeacherModal()">&times;</button>
+        </div>
+        <div class="modal-body-custom">
+            <form id="quickTeacherForm">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label-custom">Full Name *</label>
+                        <input type="text" id="teachFullName" class="form-control-custom" required placeholder="e.g. Prof. Suresh More" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-custom">Subject Expertise *</label>
+                        <input type="text" id="teachSubject" class="form-control-custom" required placeholder="e.g. Mathematics" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-custom">Qualification *</label>
+                        <input type="text" id="teachQualification" class="form-control-custom" required placeholder="e.g. M.Sc. B.Ed." />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-custom">Experience (Years)</label>
+                        <input type="number" id="teachExperience" class="form-control-custom" min="0" value="5" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-custom">Phone Number *</label>
+                        <input type="tel" id="teachPhone" class="form-control-custom" required placeholder="9876543210" />
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label-custom">Email Address *</label>
+                        <input type="email" id="teachEmail" class="form-control-custom" required placeholder="teacher@ganeshschool.com" />
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label-custom">Professional Bio / Description</label>
+                        <textarea id="teachDesc" class="form-control-custom" rows="2" placeholder="Experience details or specialization..."></textarea>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <button type="button" class="btn btn-light" onclick="closeAddTeacherModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="bi bi-check-lg me-1"></i> Register Faculty
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Add Passout -->
+<div id="addPassoutModal" class="modal-backdrop-custom">
+    <div class="modal-dialog-custom">
+        <div class="modal-header-custom">
+            <h5 class="modal-title-custom"><i class="bi bi-trophy-fill text-success me-2"></i> Add 10th Board Passout Record</h5>
+            <button class="modal-close-btn" onclick="closeAddPassoutModal()">&times;</button>
+        </div>
+        <div class="modal-body-custom">
+            <form id="quickPassoutForm">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label-custom">Passing Academic Year *</label>
+                        <input type="number" id="passYear" class="form-control-custom" required min="2000" max="2030" value="2025" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-custom">Score Percentage (%) *</label>
+                        <input type="number" id="passPercentage" step="0.01" class="form-control-custom" required min="35" max="100" placeholder="e.g. 89.5" />
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label-custom">Student Full Name *</label>
+                        <input type="text" id="passFullName" class="form-control-custom" required placeholder="e.g. Rohan Vilas Shinde" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-custom">Stream / Specialization</label>
+                        <select id="passSpecialization" class="form-select-custom">
+                            <option value="Science">Science</option>
+                            <option value="Commerce">Commerce</option>
+                            <option value="Arts">Arts</option>
+                            <option value="General">General</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-custom">Contact / Email</label>
+                        <input type="text" id="passContact" class="form-control-custom" placeholder="student@example.com" />
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <button type="button" class="btn btn-light" onclick="closeAddPassoutModal()">Cancel</button>
+                    <button type="submit" class="btn btn-success px-4">
+                        <i class="bi bi-check-lg me-1"></i> Save Passout Record
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Add Stock / School Material -->
+<div id="addStockModal" class="modal-backdrop-custom">
+    <div class="modal-dialog-custom">
+        <div class="modal-header-custom">
+            <h5 class="modal-title-custom"><i class="bi bi-boxes text-warning me-2"></i> Register New School Material / Stock</h5>
+            <button class="modal-close-btn" onclick="closeAddStockModal()">&times;</button>
+        </div>
+        <div class="modal-body-custom">
+            <form id="quickStockForm">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label-custom">Material / Item Name *</label>
+                        <input type="text" id="stockItemName" class="form-control-custom" required placeholder="e.g. Navneet Long Ruled Notebooks" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-custom">Category *</label>
+                        <select id="stockCategory" class="form-select-custom" required>
+                            <option value="Stationery">Stationery</option>
+                            <option value="Textbooks">Textbooks</option>
+                            <option value="Uniforms">Uniforms</option>
+                            <option value="Science Lab">Science Lab</option>
+                            <option value="Sports Equipment">Sports Equipment</option>
+                            <option value="Exam Materials">Exam Materials</option>
+                            <option value="Classroom Furniture">Classroom Furniture</option>
+                            <option value="IT & Electronics">IT & Electronics</option>
+                            <option value="Health & Safety">Health & Safety</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-custom">Item Code / SKU *</label>
+                        <input type="text" id="stockItemCode" class="form-control-custom" required placeholder="e.g. STK-STA-010" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label-custom">Quantity *</label>
+                        <input type="number" id="stockQuantity" class="form-control-custom" required min="0" value="50" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label-custom">Unit *</label>
+                        <select id="stockUnit" class="form-select-custom" required>
+                            <option value="Units">Units</option>
+                            <option value="Packs">Packs</option>
+                            <option value="Boxes">Boxes</option>
+                            <option value="Sets">Sets</option>
+                            <option value="Copies">Copies</option>
+                            <option value="Pairs">Pairs</option>
+                            <option value="Sheets">Sheets</option>
+                            <option value="Kits">Kits</option>
+                            <option value="Balls">Balls</option>
+                            <option value="Pens">Pens</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label-custom">Min Alert Threshold</label>
+                        <input type="number" id="stockMinThreshold" class="form-control-custom" min="1" value="10" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-custom">Unit Price (₹) *</label>
+                        <input type="number" step="0.01" id="stockUnitPrice" class="form-control-custom" required min="0" value="100.00" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label-custom">Storage Location *</label>
+                        <input type="text" id="stockLocation" class="form-control-custom" required placeholder="e.g. Central Store Room" value="Central Store Room" />
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label-custom">Supplier / Vendor Name</label>
+                        <input type="text" id="stockSupplier" class="form-control-custom" placeholder="e.g. Navneet Publications / Local Vendor" />
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label-custom">Remarks / Allocation Notes</label>
+                        <input type="text" id="stockRemarks" class="form-control-custom" placeholder="e.g. For Class 10th term practicals" />
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <button type="button" class="btn btn-light" onclick="closeAddStockModal()">Cancel</button>
+                    <button type="submit" class="btn btn-warning text-dark fw-bold px-4">
+                        <i class="bi bi-check-lg me-1"></i> Save Material to Stock
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Quick Restock Item -->
+<div id="restockStockModal" class="modal-backdrop-custom">
+    <div class="modal-dialog-custom" style="max-width: 440px;">
+        <div class="modal-header-custom">
+            <h5 class="modal-title-custom"><i class="bi bi-arrow-repeat text-primary me-2"></i> Restock Material Quantity</h5>
+            <button class="modal-close-btn" onclick="closeRestockModal()">&times;</button>
+        </div>
+        <div class="modal-body-custom">
+            <form id="quickRestockForm">
+                <input type="hidden" id="restockItemId" value="0" />
+                <div class="mb-3">
+                    <label class="form-label small text-muted">Material Name:</label>
+                    <h6 class="fw-bold text-dark" id="restockItemNameText">-</h6>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label-custom">Additional Quantity to Add *</label>
+                    <input type="number" id="restockAddQty" class="form-control-custom" required min="1" value="20" />
+                </div>
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <button type="button" class="btn btn-light" onclick="closeRestockModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="bi bi-plus-lg me-1"></i> Confirm Restock
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: View Student Record Profile -->
+<div id="viewStudentModal" class="modal-backdrop-custom">
+    <div class="modal-dialog-custom" style="max-width: 520px;">
+        <div class="modal-header-custom" style="background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); color: white; border-top-left-radius: var(--radius-lg); border-top-right-radius: var(--radius-lg);">
+            <div class="d-flex align-items-center gap-2">
+                <div class="card-icon-badge" style="background: rgba(255,255,255,0.2); color: white;">
+                    <i class="bi bi-person-vcard-fill"></i>
+                </div>
+                <div>
+                    <h5 class="modal-title-custom mb-0 text-white">Student Record Profile</h5>
+                    <p class="small text-white-50 mb-0">Official Student Registry Details</p>
+                </div>
+            </div>
+            <button class="modal-close-btn text-white" onclick="closeViewStudentModal()">&times;</button>
+        </div>
+        <div class="modal-body-custom p-4">
+            <div class="text-center mb-4">
+                <div class="avatar-initials mx-auto mb-2" id="viewStuInitials" style="width: 70px; height: 70px; font-size: 1.8rem; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(37,99,235,0.3);">
+                    S
+                </div>
+                <h4 class="fw-bold mb-1 text-dark" id="viewStuName">Student Name</h4>
+                <div class="d-flex align-items-center justify-content-center gap-2">
+                    <span class="badge bg-primary px-3 py-1" id="viewStuIdBadge">#1</span>
+                    <span class="badge bg-success-subtle text-success px-3 py-1"><i class="bi bi-check-circle me-1"></i>Active Enrolled</span>
+                </div>
+            </div>
+
+            <div class="card border-0 bg-light p-3 rounded-3 mb-4">
+                <div class="row g-3">
+                    <div class="col-6">
+                        <span class="text-muted small d-block">Academic Class</span>
+                        <strong class="text-dark" id="viewStuStandard">Class 10th</strong>
+                    </div>
+                    <div class="col-6">
+                        <span class="text-muted small d-block">Gender</span>
+                        <strong class="text-dark" id="viewStuGender">Male</strong>
+                    </div>
+                    <div class="col-6">
+                        <span class="text-muted small d-block">Age</span>
+                        <strong class="text-dark" id="viewStuAge">15 Years</strong>
+                    </div>
+                    <div class="col-6">
+                        <span class="text-muted small d-block">Parent Mobile</span>
+                        <a id="viewStuMobileLink" href="#" class="text-primary text-decoration-none fw-bold">
+                            <i class="bi bi-telephone-fill me-1"></i><span id="viewStuMobile">9876543210</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center pt-2">
+                <button type="button" class="btn btn-outline-secondary" onclick="closeViewStudentModal()">Close</button>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-primary" id="viewStuIdCardBtn">
+                        <i class="bi bi-person-badge me-1"></i> ID Card
+                    </button>
+                    <a id="viewStuEditBtn" href="#" class="btn btn-primary">
+                        <i class="bi bi-pencil-square me-1"></i> Edit Record
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Filter students table by standard
+    function filterStudentsByClass(std) {
+        const rows = document.querySelectorAll('#studentsTableBody tr');
+        rows.forEach(r => {
+            const rowStd = r.getAttribute('data-standard');
+            if (std === 'all' || rowStd === std) {
+                r.style.display = '';
+            } else {
+                r.style.display = 'none';
+            }
+        });
+    }
+</script>

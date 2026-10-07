@@ -1,0 +1,79 @@
+@model Ganesh1.Models.Passout
+
+@{
+    ViewData["Title"] = "Add Passout - Ganesh High School";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="custom-card">
+            <div class="custom-card-header">
+                <div class="card-title-group">
+                    <div class="card-icon-badge bg-success-subtle text-success">
+                        <i class="bi bi-trophy-fill"></i>
+                    </div>
+                    <div>
+                        <h3 class="card-title-text">Add 10th Board Passout Record</h3>
+                        <p class="card-subtitle-text">Record student board performance & percentage</p>
+                    </div>
+                </div>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left me-1"></i> Back to Passouts
+                </a>
+            </div>
+            <div class="custom-card-body">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="Year" class="form-label-custom">Passing Academic Year *</label>
+                            <input asp-for="Year" type="number" class="form-control-custom" required min="2000" max="2030" value="2025" />
+                            <span asp-validation-for="Year" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Percentage" class="form-label-custom">Percentage (%) *</label>
+                            <input asp-for="Percentage" type="number" step="0.01" class="form-control-custom" required min="35" max="100" placeholder="e.g. 88.5" />
+                            <span asp-validation-for="Percentage" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="FullName" class="form-label-custom">Student Full Name *</label>
+                            <input asp-for="FullName" class="form-control-custom" required placeholder="e.g. Ganesh V. Patil" />
+                            <span asp-validation-for="FullName" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Specialization" class="form-label-custom">Stream / Specialization</label>
+                            <select asp-for="Specialization" class="form-select-custom">
+                                <option value="Science">Science</option>
+                                <option value="Commerce">Commerce</option>
+                                <option value="Arts">Arts</option>
+                                <option value="General">General</option>
+                            </select>
+                            <span asp-validation-for="Specialization" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="ExampleContact" class="form-label-custom">Contact Email / Phone</label>
+                            <input asp-for="ExampleContact" class="form-control-custom" placeholder="student@example.com" />
+                            <span asp-validation-for="ExampleContact" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                        <a asp-action="Index" class="btn btn-light">Cancel</a>
+                        <button type="submit" class="btn btn-success px-4">
+                            <i class="bi bi-check-lg me-1"></i> Save Passout Record
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
