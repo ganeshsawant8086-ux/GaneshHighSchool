@@ -18,6 +18,12 @@
     "description": "Faculty staff profiles, departments, and qualifications."
   },
   {
+    "title": "Teacher Payments",
+    "section": "teacherpayments-section",
+    "icon": "bi-cash-stack",
+    "description": "Faculty payroll, attendance, daily salary, deductions & final salary."
+  },
+  {
     "title": "10th Board Passouts",
     "section": "passouts-section",
     "icon": "bi-trophy-fill",
@@ -84,3 +90,4 @@
     "description": "Admissions office contact, campus address and inquiry submission."
   }
 ]
+

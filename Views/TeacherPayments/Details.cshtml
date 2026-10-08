@@ -1,0 +1,849 @@
+@model Ganesh1.Controllers.TeacherPaymentsController.PaymentViewModel
+
+@{
+    ViewData["Title"] = $"Salary & Payment Details - {Model.Teacher?.FullName} - Ganesh High School";
+    var teacher = Model.Teacher;
+    var lastPay = Model.LastPayment;
+    var history = Model.PaymentHistory ?? new List<Ganesh1.Models.TeacherPayment>();
+    var currentNet = (lastPay?.LastPaymentAmount ?? (lastPay != null ? lastPay.NetSalary : 0m));
+}
+
+<!-- Custom Styles for Teacher Payment Details & Salary Slips -->
+<style>
+    .payment-hero-card {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        border-radius: var(--radius-xl, 20px);
+        color: #ffffff;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    .payment-hero-card::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 320px;
+        height: 320px;
+        background: radial-gradient(circle, rgba(37, 99, 235, 0.25) 0%, rgba(37, 99, 235, 0) 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    .faculty-avatar-large {
+        width: 84px;
+        height: 84px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.25rem;
+        font-weight: 700;
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+        border: 4px solid rgba(255, 255, 255, 0.15);
+    }
+    .kpi-stat-card {
+        background: #ffffff;
+        border: 1px solid var(--border-color, #e2e8f0);
+        border-radius: var(--radius-lg, 16px);
+        padding: 1.5rem;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+    .kpi-stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+    }
+    .kpi-stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.35rem;
+        margin-bottom: 1rem;
+    }
+    .kpi-stat-val {
+        font-size: 1.85rem;
+        font-weight: 800;
+        font-family: 'Outfit', sans-serif;
+        color: var(--dark, #0f172a);
+        line-height: 1.1;
+    }
+    .kpi-stat-label {
+        font-size: 0.85rem;
+        color: var(--text-muted, #64748b);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-top: 0.35rem;
+    }
+    .voucher-card {
+        background: #ffffff;
+        border-radius: var(--radius-lg, 16px);
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
+    .voucher-header {
+        background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);
+        border-bottom: 2px dashed #cbd5e1;
+        padding: 1.5rem 2rem;
+    }
+    .voucher-body {
+        padding: 2rem;
+    }
+    .voucher-total-banner {
+        background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        color: white;
+        border-radius: 14px;
+        padding: 1.25rem 1.75rem;
+        box-shadow: 0 6px 16px rgba(16, 185, 129, 0.25);
+    }
+    .payslip-table th {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #64748b;
+        background-color: #f8fafc;
+    }
+    .badge-paid {
+        background-color: #ecfdf5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+        font-weight: 700;
+        padding: 0.35rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+    }
+    @@media print {
+        body * {
+            visibility: hidden;
+        }
+        #printableSlipArea, #printableSlipArea * {
+            visibility: visible;
+        }
+        #printableSlipArea {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            padding: 20px;
+            background: white !important;
+            color: black !important;
+        }
+        .no-print {
+            display: none !important;
+        }
+    }
+</style>
+
+<div class="container-fluid px-0">
+    <!-- Top Alert Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show d-flex align-items-center mb-4" role="alert">
+            <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+            <div><strong>Success!</strong> @TempData["SuccessMessage"]</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center mb-4" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+            <div><strong>Notice:</strong> @TempData["ErrorMessage"]</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- 1. FACULTY HEADER HERO BANNER -->
+    <div class="payment-hero-card">
+        <div class="row align-items-center g-3">
+            <div class="col-auto">
+                <div class="faculty-avatar-large">
+                    @(teacher?.FullName?.Length > 0 ? teacher.FullName[0].ToString() : "T")
+                </div>
+            </div>
+            <div class="col">
+                <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1 rounded-pill fw-bold">
+                        <i class="bi bi-mortarboard-fill me-1"></i> @(teacher?.SubjectExpertise ?? "Faculty") Department
+                    </span>
+                    <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 rounded-pill fw-bold">
+                        <i class="bi bi-check-circle-fill me-1"></i> Active Faculty
+                    </span>
+                    <span class="badge bg-secondary-subtle text-light border border-secondary px-3 py-1 rounded-pill">
+                        Faculty ID: #GHS-FAC-00@(teacher?.Id)
+                    </span>
+                </div>
+                <h2 class="mb-1 fw-bold text-white font-heading">@teacher?.FullName</h2>
+                <div class="text-white-50 d-flex flex-wrap gap-3 mt-2 font-sm">
+                    <div><i class="bi bi-award-fill text-warning me-1"></i> <strong>Qualification:</strong> @teacher?.Qualification</div>
+                    <div><i class="bi bi-clock-history text-info me-1"></i> <strong>Experience:</strong> @teacher?.YearsOfExperience Years</div>
+                    <div><i class="bi bi-telephone-fill text-success me-1"></i> <strong>Phone:</strong> @teacher?.Phone</div>
+                    <div><i class="bi bi-envelope-fill text-primary me-1"></i> <strong>Email:</strong> @teacher?.Email</div>
+                    <div><i class="bi bi-calendar-check text-light me-1"></i> <strong>Joining:</strong> @(teacher?.JoiningDate.ToString("dd MMM yyyy") ?? "-")</div>
+                </div>
+            </div>
+            <div class="col-lg-auto d-flex flex-wrap gap-2 justify-content-end align-items-center">
+                @if (Model.AllTeachers.Any())
+                {
+                    <select class="form-select form-select-sm bg-dark text-white border-secondary" style="width: auto; min-width: 180px;" onchange="if(this.value) window.location.href='/TeacherPayments/Details/' + this.value;">
+                        @foreach (var t in Model.AllTeachers)
+                        {
+                            var isSel = (teacher != null && t.Id == teacher.Id);
+                            <option value="@t.Id" selected="@isSel">@t.FullName (@t.SubjectExpertise)</option>
+                        }
+                    </select>
+                }
+                <button type="button" class="btn btn-warning btn-sm fw-semibold shadow-sm" onclick="openPrintModal()">
+                    <i class="bi bi-printer-fill me-1"></i> Print Payslip
+                </button>
+                <a href="#recordPaymentCard" class="btn btn-primary btn-sm fw-semibold shadow-sm">
+                    <i class="bi bi-plus-circle-fill me-1"></i> Record New Payment
+                </a>
+                <a asp-controller="Teachers" asp-action="Index" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-arrow-left me-1"></i> Teachers Directory
+                </a>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm text-white-50">
+                    <i class="bi bi-list-check me-1"></i> All Payments
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. ANALYTICS & STATS KPI ROW -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-6 col-xl-3">
+            <div class="kpi-stat-card">
+                <div class="kpi-stat-icon bg-success-subtle text-success">
+                    <i class="bi bi-cash-coin"></i>
+                </div>
+                <div class="kpi-stat-val text-success">
+                    ₹@currentNet.ToString("N2")
+                </div>
+                <div class="kpi-stat-label">Last Month Disbursed (@(lastPay?.MonthName ?? "Recent"))</div>
+                <div class="small text-muted mt-2 d-flex align-items-center gap-1">
+                    <i class="bi bi-check2-all text-success"></i>
+                    Status: <span class="badge-paid ms-1">@(lastPay?.PaymentStatus ?? "Paid")</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="kpi-stat-card">
+                <div class="kpi-stat-icon bg-primary-subtle text-primary">
+                    <i class="bi bi-wallet2"></i>
+                </div>
+                <div class="kpi-stat-val text-primary">
+                    ₹@Model.TotalEarningsYtd.ToString("N2")
+                </div>
+                <div class="kpi-stat-label">Total Disbursed (Year @DateTime.Today.Year)</div>
+                <div class="small text-muted mt-2">
+                    Across <strong>@(history.Count)</strong> recorded monthly pay cycles
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="kpi-stat-card">
+                <div class="kpi-stat-icon bg-info-subtle text-info">
+                    <i class="bi bi-calendar2-check-fill"></i>
+                </div>
+                <div class="kpi-stat-val text-info">
+                    @(Model.AttendanceRateYtd)%
+                </div>
+                <div class="kpi-stat-label">Overall Attendance Rate</div>
+                <div class="small text-muted mt-2">
+                    <strong>@Model.TotalDaysPresentYtd</strong> days present / @Model.TotalWorkingDaysYtd total days
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="kpi-stat-card">
+                <div class="kpi-stat-icon bg-warning-subtle text-warning">
+                    <i class="bi bi-speedometer2"></i>
+                </div>
+                <div class="kpi-stat-val text-dark">
+                    ₹@((lastPay?.DailySalary ?? 1500m).ToString("N2"))
+                </div>
+                <div class="kpi-stat-label">Daily Salary Remuneration</div>
+                <div class="small text-muted mt-2">
+                    Standard 26 working days schedule
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. MAIN SECTION: LATEST SALARY VOUCHER & ATTENDANCE SUMMARY -->
+    <div class="row g-4 mb-4">
+        <!-- Official Salary Voucher / Payslip Card -->
+        <div class="col-lg-7">
+            <div class="voucher-card h-100">
+                <div class="voucher-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-primary px-2 py-1"><i class="bi bi-shield-check"></i> OFFICIAL</span>
+                            <h5 class="mb-0 fw-bold text-dark font-heading">
+                                Salary Voucher & Remuneration Slip
+                            </h5>
+                        </div>
+                        <p class="text-muted small mb-0 mt-1">
+                            Ganesh High School, Pandharpur • Month of <strong>@(lastPay?.MonthName ?? "Latest") @(lastPay?.Year ?? DateTime.Today.Year)</strong>
+                        </p>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge-paid">
+                            <i class="bi bi-check-circle-fill me-1"></i> @(lastPay?.PaymentStatus ?? "PAID")
+                        </span>
+                        <div class="small text-muted mt-1">
+                            Disbursed: @(lastPay?.PaymentDate.ToString("dd MMM yyyy") ?? "-")
+                        </div>
+                    </div>
+                </div>
+
+                <div class="voucher-body">
+                    @if (lastPay != null)
+                    {
+                        var grossSalary = lastPay.DaysPresent * lastPay.DailySalary;
+                        var netSalary = lastPay.LastPaymentAmount ?? lastPay.NetSalary;
+                        <!-- Attendance Metrics for Month -->
+                        <div class="p-3 bg-light rounded-3 mb-4 border">
+                            <h6 class="fw-bold text-dark mb-2 d-flex align-items-center gap-2">
+                                <i class="bi bi-calendar3-range text-primary"></i> Monthly Attendance & Duty Record
+                            </h6>
+                            <div class="row text-center g-2 pt-1">
+                                <div class="col-3">
+                                    <div class="text-muted small">Total Days</div>
+                                    <div class="fw-bold fs-5 text-dark">@lastPay.TotalWorkingDays</div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="text-muted small">Present</div>
+                                    <div class="fw-bold fs-5 text-success">@lastPay.DaysPresent</div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="text-muted small">Absent</div>
+                                    <div class="fw-bold fs-5 text-danger">@lastPay.DaysAbsent</div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="text-muted small">Holidays/Leaves</div>
+                                    <div class="fw-bold fs-5 text-info">@lastPay.Holidays</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings & Deductions Breakdown -->
+                        <div class="row g-3 mb-4">
+                            <!-- Earnings Column -->
+                            <div class="col-sm-6">
+                                <div class="border rounded-3 p-3 h-100 bg-white">
+                                    <div class="d-flex align-items-center justify-content-between mb-2 pb-1 border-bottom">
+                                        <h6 class="fw-bold text-success mb-0">
+                                            <i class="bi bi-plus-circle me-1"></i> Earnings / Remuneration
+                                        </h6>
+                                    </div>
+                                    <div class="d-flex justify-content-between py-1 border-bottom small">
+                                        <span class="text-muted">Daily Scale:</span>
+                                        <strong>₹@lastPay.DailySalary.ToString("N2")</strong>
+                                    </div>
+                                    <div class="d-flex justify-content-between py-1 border-bottom small">
+                                        <span class="text-muted">Days Present (@lastPay.DaysPresent × ₹@lastPay.DailySalary.ToString("N0")):</span>
+                                        <strong class="text-dark">₹@grossSalary.ToString("N2")</strong>
+                                    </div>
+                                    <div class="d-flex justify-content-between py-1 border-bottom small">
+                                        <span class="text-muted">Academic Special Allowance:</span>
+                                        <strong class="text-dark">₹0.00</strong>
+                                    </div>
+                                    <div class="d-flex justify-content-between pt-2 fw-bold text-success">
+                                        <span>Gross Earnings:</span>
+                                        <span>₹@grossSalary.ToString("N2")</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Deductions Column -->
+                            <div class="col-sm-6">
+                                <div class="border rounded-3 p-3 h-100 bg-white">
+                                    <div class="d-flex align-items-center justify-content-between mb-2 pb-1 border-bottom">
+                                        <h6 class="fw-bold text-danger mb-0">
+                                            <i class="bi bi-dash-circle me-1"></i> Statutory Deductions
+                                        </h6>
+                                    </div>
+                                    <div class="d-flex justify-content-between py-1 border-bottom small">
+                                        <span class="text-muted">Provident Fund (PF):</span>
+                                        <strong class="text-dark">₹@((lastPay.Deductions * 0.8m).ToString("N2"))</strong>
+                                    </div>
+                                    <div class="d-flex justify-content-between py-1 border-bottom small">
+                                        <span class="text-muted">Professional Tax (PT):</span>
+                                        <strong class="text-dark">₹@((lastPay.Deductions * 0.2m).ToString("N2"))</strong>
+                                    </div>
+                                    <div class="d-flex justify-content-between py-1 border-bottom small">
+                                        <span class="text-muted">TDS / Other Cuts:</span>
+                                        <strong class="text-dark">₹0.00</strong>
+                                    </div>
+                                    <div class="d-flex justify-content-between pt-2 fw-bold text-danger">
+                                        <span>Total Deductions:</span>
+                                        <span>₹@lastPay.Deductions.ToString("N2")</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Grand Total Disbursed Banner -->
+                        <div class="voucher-total-banner d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <div>
+                                <div class="text-white-50 text-uppercase small fw-bold tracking-wide">Net Disbursed Take-Home Remuneration</div>
+                                <div class="fs-2 fw-bold font-heading text-white">
+                                    ₹@netSalary.ToString("N2")
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <button type="button" class="btn btn-light btn-sm fw-bold px-3 py-2 shadow-sm" onclick="openPrintModal()">
+                                    <i class="bi bi-printer me-1"></i> Print Payslip Voucher
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Banking & Audit Trail -->
+                        <div class="mt-4 pt-3 border-top">
+                            <div class="row g-2 text-muted small">
+                                <div class="col-md-6">
+                                    <div><i class="bi bi-bank text-primary me-1"></i> <strong>Disbursement Mode:</strong> @(lastPay.PaymentMode ?? "Direct Bank Transfer (NEFT)")</div>
+                                    <div class="mt-1"><i class="bi bi-qr-code text-secondary me-1"></i> <strong>Transaction Ref:</strong> <code>@(lastPay.TransactionReference ?? "TXN-GHS-2026")</code></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div><i class="bi bi-info-circle text-info me-1"></i> <strong>Remarks:</strong> @(lastPay.Remarks ?? "Salary credited successfully")</div>
+                                    <div class="mt-1"><i class="bi bi-building-check text-success me-1"></i> <strong>Verified By:</strong> Accounts Department, Ganesh High School</div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <div class="display-6 text-muted mb-3"><i class="bi bi-credit-card-2-front"></i></div>
+                            <h5 class="fw-bold text-dark">No Payment Records Found</h5>
+                            <p class="text-muted">Record the first monthly payment for this faculty member using the form on the right.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Record New Payment Form Card -->
+        <div class="col-lg-5" id="recordPaymentCard">
+            <div class="custom-card h-100 shadow-sm border">
+                <div class="custom-card-header bg-white border-bottom">
+                    <div class="card-title-group">
+                        <div class="card-icon-badge bg-primary-subtle text-primary">
+                            <i class="bi bi-credit-card-plus"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title-text mb-0">Record Faculty Payment</h5>
+                            <p class="card-subtitle-text mb-0">Disburse salary for @teacher?.FullName</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="custom-card-body p-4">
+                    <form asp-action="Create" method="post" id="paymentForm">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="TeacherId" value="@teacher?.Id" />
+
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold small text-muted">Pay Month (1-12)</label>
+                                <select class="form-select form-select-sm" name="Month" id="inputMonth">
+                                    @for (int m = 1; m <= 12; m++)
+                                    {
+                                        var mName = new DateTime(2026, m, 1).ToString("MMMM");
+                                        var isSelected = m == (DateTime.Today.Month);
+                                        <option value="@m" selected="@isSelected">@m - @mName</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold small text-muted">Year</label>
+                                <input class="form-control form-control-sm" type="number" name="Year" id="inputYear" value="@DateTime.Today.Year" />
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold small text-muted">Total Working Days</label>
+                                <input class="form-control form-control-sm" type="number" name="TotalWorkingDays" id="inputWorkingDays" value="26" min="1" max="31" oninput="calculateLiveSalary()" />
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold small text-muted">Days Present</label>
+                                <input class="form-control form-control-sm" type="number" name="DaysPresent" id="inputDaysPresent" value="25" min="0" max="31" oninput="calculateLiveSalary()" />
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold small text-muted">Holidays / Approved Leaves</label>
+                                <input class="form-control form-control-sm" type="number" name="Holidays" id="inputHolidays" value="1" min="0" max="31" oninput="calculateLiveSalary()" />
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold small text-muted">Daily Remuneration (₹)</label>
+                                <input class="form-control form-control-sm" type="number" step="10" name="DailySalary" id="inputDailySalary" value="@((lastPay?.DailySalary ?? 1500m).ToString("F0"))" min="100" oninput="calculateLiveSalary()" />
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold small text-muted">Deductions (PF / PT) (₹)</label>
+                                <input class="form-control form-control-sm" type="number" step="50" name="Deductions" id="inputDeductions" value="@((lastPay?.Deductions ?? 1500m).ToString("F0"))" min="0" oninput="calculateLiveSalary()" />
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold small text-muted">Payment Mode</label>
+                                <select class="form-select form-select-sm" name="PaymentMode">
+                                    <option value="Direct Bank Transfer (NEFT)">Direct Bank Transfer (NEFT)</option>
+                                    <option value="RTGS Transfer">RTGS Transfer</option>
+                                    <option value="Cheque / Draft">School Cheque / DD</option>
+                                    <option value="Cash Voucher">Cash Voucher</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label fw-semibold small text-muted">Remarks / Note</label>
+                                <input class="form-control form-control-sm" type="text" name="Remarks" placeholder="E.g. Monthly salary credited to Bank A/C" />
+                            </div>
+                        </div>
+
+                        <!-- Live Calculation Preview Card -->
+                        <div class="p-3 my-3 rounded-3 bg-light border">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="text-muted small">Estimated Gross Earnings:</span>
+                                <strong id="previewGross" class="text-dark">₹37,500.00</strong>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="text-muted small">Deductions (PF/PT):</span>
+                                <span id="previewDeductions" class="text-danger fw-semibold">-₹1,500.00</span>
+                            </div>
+                            <hr class="my-2" />
+                            <div class="d-flex justify-content-between align-items-center">
+                                <strong class="text-dark">Estimated Net Payable:</strong>
+                                <span id="previewNet" class="fs-5 fw-bold text-success">₹36,000.00</span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary flex-grow-1 fw-bold">
+                                <i class="bi bi-check2-circle me-1"></i> Disburse & Record Payment
+                            </button>
+                            <button type="reset" class="btn btn-outline-secondary" onclick="setTimeout(calculateLiveSalary, 50)">
+                                Reset
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. MONTHLY PAYMENT HISTORY LEDGER TABLE -->
+    <div class="custom-card shadow-sm border mb-5">
+        <div class="custom-card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div class="card-title-group">
+                <div class="card-icon-badge bg-success-subtle text-success">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+                <div>
+                    <h5 class="card-title-text mb-0">Payment History & Disbursement Ledger</h5>
+                    <p class="card-subtitle-text mb-0">Chronological salary slips and records for @teacher?.FullName</p>
+                </div>
+            </div>
+            <div>
+                <span class="badge bg-light text-dark border px-3 py-2 fw-semibold">
+                    <i class="bi bi-journal-text me-1"></i> Total Recorded Cycles: @history.Count
+                </span>
+            </div>
+        </div>
+        <div class="custom-card-body p-0">
+            @if (history.Any())
+            {
+                <div class="table-responsive">
+                    <table class="modern-table payslip-table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Salary Cycle</th>
+                                <th>Payment Date</th>
+                                <th>Attendance (Worked / Total)</th>
+                                <th>Daily Scale</th>
+                                <th>Gross Salary</th>
+                                <th>Deductions</th>
+                                <th>Net Disbursed</th>
+                                <th>Payment Mode & Txn ID</th>
+                                <th>Status</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in history)
+                            {
+                                var gross = item.DaysPresent * item.DailySalary;
+                                var net = item.LastPaymentAmount ?? item.NetSalary;
+                                var attPct = item.TotalWorkingDays > 0 ? (int)((double)item.DaysPresent / item.TotalWorkingDays * 100) : 100;
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold text-dark">
+                                            <i class="bi bi-calendar-event text-primary me-1"></i> @item.MonthName @item.Year
+                                        </div>
+                                        <div class="text-muted small">Month @item.Month</div>
+                                    </td>
+                                    <td>
+                                        <span class="fw-semibold text-secondary">
+                                            @item.PaymentDate.ToString("dd MMM yyyy")
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="fw-bold">@item.DaysPresent / @item.TotalWorkingDays d</div>
+                                            <div class="progress flex-grow-1" style="height: 6px; width: 60px;">
+                                                <div class="progress-bar bg-success" role="progressbar" style="width: @attPct%" aria-valuenow="@attPct" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                        <div class="text-muted small">@item.DaysAbsent absent • @item.Holidays leave</div>
+                                    </td>
+                                    <td>₹@item.DailySalary.ToString("N0") / d</td>
+                                    <td>₹@gross.ToString("N2")</td>
+                                    <td class="text-danger">-₹@item.Deductions.ToString("N2")</td>
+                                    <td>
+                                        <span class="fw-bold fs-6 text-success">
+                                            ₹@net.ToString("N2")
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="small fw-semibold text-dark">@(item.PaymentMode ?? "Bank Transfer")</div>
+                                        <div class="text-muted" style="font-size: 0.75rem;"><code>@(item.TransactionReference ?? "TXN-GHS-2026")</code></div>
+                                    </td>
+                                    <td>
+                                        <span class="badge-paid">
+                                            <i class="bi bi-check2-circle me-1"></i> @(item.PaymentStatus ?? "Paid")
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <button type="button" class="btn btn-sm btn-outline-primary" 
+                                                onclick="viewSpecificSlip('@item.MonthName @item.Year', '@item.PaymentDate.ToString("dd MMM yyyy")', '@item.TotalWorkingDays', '@item.DaysPresent', '@item.DaysAbsent', '@item.Holidays', '@item.DailySalary.ToString("N2")', '@gross.ToString("N2")', '@item.Deductions.ToString("N2")', '@net.ToString("N2")', '@(item.TransactionReference ?? "TXN-GHS-2026")', '@(item.PaymentMode ?? "Direct Bank Transfer")')">
+                                            <i class="bi bi-eye-fill me-1"></i> View Slip
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="p-5 text-center text-muted">
+                    <p class="mb-0">No past payment records registered yet.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- ======================================================================
+     5. PRINTABLE SALARY SLIP MODAL
+     ====================================================================== -->
+<div class="modal fade" id="printPayslipModal" tabindex="-1" aria-labelledby="printPayslipModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-dark text-white no-print">
+                <h5 class="modal-title font-heading" id="printPayslipModalLabel">
+                    <i class="bi bi-printer me-2"></i> Official Faculty Salary Slip
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4" id="printableSlipArea">
+                <!-- School Header -->
+                <div class="text-center pb-3 border-bottom mb-3">
+                    <h3 class="fw-bold mb-0 text-primary font-heading">GANESH HIGH SCHOOL</h3>
+                    <p class="text-muted small mb-1">Affiliated with State Board of Maharashtra • Reg. No. MH/PND/2012/8892</p>
+                    <p class="text-muted small mb-0">Station Road, Near Vitthal Mandir, Pandharpur, Maharashtra - 413304 | Tel: 9168434370</p>
+                    <div class="badge bg-dark px-3 py-2 mt-2 text-uppercase tracking-wider">
+                        MONTHLY SALARY DISBURSEMENT SLIP
+                    </div>
+                </div>
+
+                <!-- Faculty & Slip Metadata -->
+                <div class="row g-3 mb-3 small">
+                    <div class="col-6">
+                        <table class="table table-sm table-borderless mb-0">
+                            <tr>
+                                <th class="text-muted p-1" style="width: 130px;">Faculty Name:</th>
+                                <td class="fw-bold p-1">@teacher?.FullName</td>
+                            </tr>
+                            <tr>
+                                <th class="text-muted p-1">Employee ID:</th>
+                                <td class="p-1">GHS-FAC-00@(teacher?.Id)</td>
+                            </tr>
+                            <tr>
+                                <th class="text-muted p-1">Department:</th>
+                                <td class="p-1">@(teacher?.SubjectExpertise) Department</td>
+                            </tr>
+                            <tr>
+                                <th class="text-muted p-1">Designation:</th>
+                                <td class="p-1">Senior Faculty (@(teacher?.Qualification))</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-6">
+                        <table class="table table-sm table-borderless mb-0">
+                            <tr>
+                                <th class="text-muted p-1" style="width: 140px;">Salary Cycle:</th>
+                                <td class="fw-bold text-primary p-1" id="slipMonthYear">@(lastPay?.MonthName ?? "September") @(lastPay?.Year ?? 2026)</td>
+                            </tr>
+                            <tr>
+                                <th class="text-muted p-1">Disbursement Date:</th>
+                                <td class="p-1" id="slipDate">@(lastPay?.PaymentDate.ToString("dd MMM yyyy") ?? "-")</td>
+                            </tr>
+                            <tr>
+                                <th class="text-muted p-1">Payment Mode:</th>
+                                <td class="p-1" id="slipMode">@(lastPay?.PaymentMode ?? "Direct Bank Transfer (NEFT)")</td>
+                            </tr>
+                            <tr>
+                                <th class="text-muted p-1">Transaction Ref:</th>
+                                <td class="p-1" id="slipTxn">@(lastPay?.TransactionReference ?? "TXN-GHS-2026")</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Attendance Summary in Slip -->
+                <div class="p-2 bg-light border rounded mb-3 small">
+                    <div class="row text-center">
+                        <div class="col-3">Total Working Days: <strong id="slipTotalDays">@(lastPay?.TotalWorkingDays ?? 26)</strong></div>
+                        <div class="col-3 text-success">Days Present: <strong id="slipDaysPresent">@(lastPay?.DaysPresent ?? 25)</strong></div>
+                        <div class="col-3 text-danger">Days Absent: <strong id="slipDaysAbsent">@(lastPay?.DaysAbsent ?? 1)</strong></div>
+                        <div class="col-3 text-info">Approved Leave: <strong id="slipHolidays">@(lastPay?.Holidays ?? 0)</strong></div>
+                    </div>
+                </div>
+
+                <!-- Earnings & Deductions Table in Slip -->
+                <table class="table table-bordered mb-3">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Earnings Head</th>
+                            <th class="text-end">Amount (₹)</th>
+                            <th>Deductions Head</th>
+                            <th class="text-end">Amount (₹)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Basic Pay (<span id="slipDaysPresent2">@(lastPay?.DaysPresent ?? 25)</span> d × ₹<span id="slipDailyRate">@((lastPay?.DailySalary ?? 1600m).ToString("N2"))</span>)</td>
+                            <td class="text-end" id="slipGross">₹@(((lastPay?.DaysPresent ?? 25) * (lastPay?.DailySalary ?? 1600m)).ToString("N2"))</td>
+                            <td>Provident Fund (PF)</td>
+                            <td class="text-end" id="slipPf">₹@(((lastPay?.Deductions ?? 1500m) * 0.8m).ToString("N2"))</td>
+                        </tr>
+                        <tr>
+                            <td>Academic Allowance</td>
+                            <td class="text-end">₹0.00</td>
+                            <td>Professional Tax (PT)</td>
+                            <td class="text-end" id="slipPt">₹@(((lastPay?.Deductions ?? 1500m) * 0.2m).ToString("N2"))</td>
+                        </tr>
+                        <tr>
+                            <td>Dearness Allowance (DA)</td>
+                            <td class="text-end">₹0.00</td>
+                            <td>TDS / Income Tax</td>
+                            <td class="text-end">₹0.00</td>
+                        </tr>
+                        <tr class="table-light fw-bold">
+                            <td>Total Gross Earnings</td>
+                            <td class="text-end text-success" id="slipTotalGross">₹@(((lastPay?.DaysPresent ?? 25) * (lastPay?.DailySalary ?? 1600m)).ToString("N2"))</td>
+                            <td>Total Deductions</td>
+                            <td class="text-end text-danger" id="slipTotalDeductions">₹@((lastPay?.Deductions ?? 1500m).ToString("N2"))</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr class="table-active">
+                            <th colspan="2" class="fs-5 text-dark">NET SALARY PAYABLE</th>
+                            <th colspan="2" class="fs-5 text-end text-success" id="slipNetAmount">₹@((lastPay?.LastPaymentAmount ?? 38500m).ToString("N2"))</th>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                <!-- Signatures & Seal -->
+                <div class="row pt-4 mt-4 border-top text-center text-muted small">
+                    <div class="col-4">
+                        <div style="height: 40px;"></div>
+                        <div class="border-top pt-1"><strong>@teacher?.FullName</strong><br />Faculty Signature</div>
+                    </div>
+                    <div class="col-4">
+                        <div class="text-primary fw-bold mb-1"><i class="bi bi-patch-check-fill fs-4"></i><br />OFFICE SEAL</div>
+                        <div class="border-top pt-1">Ganesh High School</div>
+                    </div>
+                    <div class="col-4">
+                        <div style="height: 40px;"></div>
+                        <div class="border-top pt-1"><strong>Principal / Accountant</strong><br />Authorized Signatory</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light no-print">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary fw-bold px-4" onclick="window.print()">
+                    <i class="bi bi-printer-fill me-1"></i> Print / Save as PDF
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Live Calculation & Modal Script -->
+<script>
+    function calculateLiveSalary() {
+        const daysPresent = parseFloat(document.getElementById('inputDaysPresent')?.value || 0);
+        const dailySalary = parseFloat(document.getElementById('inputDailySalary')?.value || 0);
+        const deductions = parseFloat(document.getElementById('inputDeductions')?.value || 0);
+
+        const gross = Math.max(0, daysPresent * dailySalary);
+        const net = Math.max(0, gross - deductions);
+
+        const formatter = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' });
+
+        const grossEl = document.getElementById('previewGross');
+        const dedEl = document.getElementById('previewDeductions');
+        const netEl = document.getElementById('previewNet');
+
+        if (grossEl) grossEl.textContent = formatter.format(gross);
+        if (dedEl) dedEl.textContent = '-' + formatter.format(deductions);
+        if (netEl) netEl.textContent = formatter.format(net);
+    }
+
+    function openPrintModal() {
+        const modal = new bootstrap.Modal(document.getElementById('printPayslipModal'));
+        modal.show();
+    }
+
+    function viewSpecificSlip(monthYear, payDate, totalDays, present, absent, leaves, dailyRate, gross, deductions, net, txn, mode) {
+        document.getElementById('slipMonthYear').textContent = monthYear;
+        document.getElementById('slipDate').textContent = payDate;
+        document.getElementById('slipTotalDays').textContent = totalDays;
+        document.getElementById('slipDaysPresent').textContent = present;
+        document.getElementById('slipDaysPresent2').textContent = present;
+        document.getElementById('slipDaysAbsent').textContent = absent;
+        document.getElementById('slipHolidays').textContent = leaves;
+        document.getElementById('slipDailyRate').textContent = dailyRate;
+        document.getElementById('slipGross').textContent = '₹' + gross;
+        document.getElementById('slipTotalGross').textContent = '₹' + gross;
+
+        const numDed = parseFloat(deductions.replace(/,/g, '')) || 0;
+        document.getElementById('slipPf').textContent = '₹' + (numDed * 0.8).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+        document.getElementById('slipPt').textContent = '₹' + (numDed * 0.2).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+        document.getElementById('slipTotalDeductions').textContent = '₹' + deductions;
+        document.getElementById('slipNetAmount').textContent = '₹' + net;
+        document.getElementById('slipTxn').textContent = txn;
+        document.getElementById('slipMode').textContent = mode;
+
+        openPrintModal();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        calculateLiveSalary();
+    });
+</script>

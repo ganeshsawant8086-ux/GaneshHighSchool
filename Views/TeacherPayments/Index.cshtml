@@ -1,0 +1,464 @@
+@model Ganesh1.Controllers.TeacherPaymentsController.TeacherPaymentsIndexViewModel
+
+@{
+    ViewData["Title"] = "Teacher Payments & Faculty Payroll - Ganesh High School";
+    var teachers = Model.Teachers ?? new List<Ganesh1.Controllers.TeacherPaymentsController.TeacherPaymentItem>();
+    var selected = Model.SelectedTeacher ?? teachers.FirstOrDefault();
+    var totalFaculty = teachers.Count;
+    var totalDisbursed = teachers.Sum(t => t.FinalSalary);
+    var avgFinalSalary = totalFaculty > 0 ? (totalDisbursed / totalFaculty) : 0m;
+}
+
+<style>
+    .teacher-picker-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: var(--radius-lg, 16px);
+        padding: 1.25rem;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+        margin-bottom: 2rem;
+    }
+    .teacher-pill-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 30px;
+        border: 1px solid #cbd5e1;
+        background: #f8fafc;
+        color: #334155;
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+    .teacher-pill-btn:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+        transform: translateY(-2px);
+    }
+    .teacher-pill-btn.active {
+        background: #2563eb;
+        color: #ffffff;
+        border-color: #2563eb;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+    .selected-teacher-hero {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        border-radius: var(--radius-xl, 20px);
+        color: #ffffff;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    .selected-teacher-hero::after {
+        content: '';
+        position: absolute;
+        top: -60px;
+        right: -60px;
+        width: 260px;
+        height: 260px;
+        background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0) 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    .faculty-avatar-circle {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.85rem;
+        font-weight: 800;
+        box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
+        border: 3px solid rgba(255, 255, 255, 0.2);
+    }
+    .metric-grid-card {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(8px);
+        border-radius: var(--radius-md, 12px);
+        padding: 1.1rem;
+        text-align: center;
+        transition: transform 0.2s ease;
+    }
+    .metric-grid-card:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.12);
+    }
+    .metric-grid-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #94a3b8;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+    .metric-grid-val {
+        font-size: 1.4rem;
+        font-weight: 800;
+        font-family: 'Outfit', sans-serif;
+        color: #ffffff;
+    }
+    .final-salary-box {
+        background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        border-radius: var(--radius-md, 12px);
+        padding: 1.25rem;
+        color: white;
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+    }
+    .badge-paid {
+        background-color: #ecfdf5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+        font-weight: 700;
+        padding: 0.35rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+    }
+</style>
+
+<div class="container-fluid px-0">
+    <!-- Top Action & Title Bar -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+        <div>
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 rounded-pill fw-bold">
+                    <i class="bi bi-cash-stack me-1"></i> PAYROLL MODULE
+                </span>
+                <h3 class="mb-0 fw-bold text-dark font-heading">Teacher Payment Management</h3>
+            </div>
+            <p class="text-muted small mb-0 mt-1">
+                Calculate & inspect teacher details, attendance, worked days, absences, holidays, daily salary, deductions & final salary
+            </p>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-controller="Teachers" asp-action="Index" class="btn btn-outline-primary">
+                <i class="bi bi-person-badge-fill me-1"></i> Faculty Directory
+            </a>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-grid-fill me-1"></i> School Dashboard
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show d-flex align-items-center mb-3" role="alert">
+            <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+            <div>@TempData["SuccessMessage"]</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- 1. TEACHER SELECTOR TABS -->
+    <div class="teacher-picker-card">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+            <label class="fw-bold text-dark small text-uppercase">
+                <i class="bi bi-hand-index-thumb text-primary me-1"></i> Select Teacher to View Payment Breakdown:
+            </label>
+            <span class="badge bg-light text-secondary border">Total Faculty: @totalFaculty</span>
+        </div>
+        <div class="d-flex flex-wrap gap-2" id="teacherPillList">
+            @foreach (var t in teachers)
+            {
+                var isAct = (selected != null && selected.TeacherId == t.TeacherId);
+                <a asp-action="Index" asp-route-selectedId="@t.TeacherId" 
+                   class="teacher-pill-btn @(isAct ? "active" : "")">
+                    <span>@(t.FullName.Length > 0 ? t.FullName[0].ToString() : "T")</span>
+                    <span>@t.FullName</span>
+                    <span class="badge @(isAct ? "bg-white text-dark" : "bg-secondary-subtle text-secondary") ms-1" style="font-size: 0.7rem;">
+                        @t.Subject
+                    </span>
+                </a>
+            }
+        </div>
+    </div>
+
+    <!-- 2. SELECTED TEACHER DETAILED PAYMENT BREAKDOWN HERO -->
+    @if (selected != null)
+    {
+        <div class="selected-teacher-hero">
+            <div class="row align-items-center g-4">
+                <!-- Teacher Profile Meta -->
+                <div class="col-lg-5 border-end border-secondary border-opacity-25 pe-lg-4">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="faculty-avatar-circle">
+                            @(selected.FullName.Length > 0 ? selected.FullName[0].ToString() : "T")
+                        </div>
+                        <div>
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <span class="badge bg-primary-subtle text-primary px-2 py-0.5 rounded-pill fw-bold" style="font-size: 0.75rem;">
+                                    @selected.Subject Department
+                                </span>
+                                <span class="badge bg-success-subtle text-success px-2 py-0.5 rounded-pill fw-bold" style="font-size: 0.75rem;">
+                                    Faculty #GHS-@selected.TeacherId
+                                </span>
+                            </div>
+                            <h3 class="mb-0 fw-bold text-white font-heading">@selected.FullName</h3>
+                            <div class="text-white-50 small mt-1">@selected.Qualification • @selected.ExperienceYears Years Experience</div>
+                        </div>
+                    </div>
+
+                    <div class="text-white-50 small d-flex flex-column gap-1 pt-2 border-top border-secondary border-opacity-25">
+                        <div><i class="bi bi-telephone-fill text-success me-2"></i> <strong>Phone:</strong> @selected.Phone</div>
+                        <div><i class="bi bi-envelope-fill text-info me-2"></i> <strong>Email:</strong> @selected.Email</div>
+                        <div><i class="bi bi-calendar-check text-warning me-2"></i> <strong>Joining Date:</strong> @selected.JoiningDate.ToString("dd MMM yyyy")</div>
+                        @if (!string.IsNullOrEmpty(selected.ProfessionalDescription))
+                        {
+                            <div class="mt-1 text-white-50 fst-italic">"@selected.ProfessionalDescription"</div>
+                        }
+                    </div>
+
+                    <div class="mt-4 pt-2 d-flex gap-2 flex-wrap">
+                        <a asp-action="Details" asp-route-id="@selected.TeacherId" class="btn btn-warning btn-sm fw-bold shadow-sm">
+                            <i class="bi bi-receipt me-1"></i> Full Voucher & History
+                        </a>
+                        <a asp-action="Details" asp-route-id="@selected.TeacherId" class="btn btn-outline-light btn-sm">
+                            <i class="bi bi-plus-circle me-1"></i> Disburse New Payment
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 8 Requested Core Metrics in Grid -->
+                <div class="col-lg-7">
+                    <div class="row g-2 mb-3">
+                        <!-- Total Days Worked -->
+                        <div class="col-sm-6 col-md-3">
+                            <div class="metric-grid-card">
+                                <div class="metric-grid-label">Total Days Worked</div>
+                                <div class="metric-grid-val text-success">
+                                    @selected.TotalDaysWorked <span class="small text-white-50" style="font-size: 0.85rem;">/ @selected.TotalWorkingDays d</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Absences -->
+                        <div class="col-sm-6 col-md-3">
+                            <div class="metric-grid-card">
+                                <div class="metric-grid-label">Absences</div>
+                                <div class="metric-grid-val text-danger">
+                                    @selected.Absences <span class="small text-white-50" style="font-size: 0.85rem;">Days</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Holidays / Approved Leaves -->
+                        <div class="col-sm-6 col-md-3">
+                            <div class="metric-grid-card">
+                                <div class="metric-grid-label">Holidays / Leaves</div>
+                                <div class="metric-grid-val text-info">
+                                    @selected.Holidays <span class="small text-white-50" style="font-size: 0.85rem;">Days</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Attendance Rate -->
+                        <div class="col-sm-6 col-md-3">
+                            <div class="metric-grid-card">
+                                <div class="metric-grid-label">Attendance Rate</div>
+                                <div class="metric-grid-val text-warning">
+                                    @selected.AttendancePercentage%
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Daily Salary -->
+                        <div class="col-sm-6 col-md-3">
+                            <div class="metric-grid-card">
+                                <div class="metric-grid-label">Daily Salary</div>
+                                <div class="metric-grid-val text-white">
+                                    ₹@selected.DailySalary.ToString("N0")
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gross Salary -->
+                        <div class="col-sm-6 col-md-3">
+                            <div class="metric-grid-card">
+                                <div class="metric-grid-label">Gross Salary</div>
+                                <div class="metric-grid-val text-white">
+                                    ₹@selected.GrossSalary.ToString("N0")
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Salary Deductions -->
+                        <div class="col-sm-6 col-md-3">
+                            <div class="metric-grid-card">
+                                <div class="metric-grid-label">Salary Deductions</div>
+                                <div class="metric-grid-val text-danger">
+                                    -₹@selected.SalaryDeductions.ToString("N0")
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Last Payment -->
+                        <div class="col-sm-6 col-md-3">
+                            <div class="metric-grid-card">
+                                <div class="metric-grid-label">Last Payment</div>
+                                <div class="metric-grid-val text-info" style="font-size: 1.15rem;">
+                                    @(selected.LastPaymentDate?.ToString("dd MMM") ?? "Pending")
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Final Salary Calculation Highlight Box -->
+                    <div class="final-salary-box d-flex justify-content-between align-items-center flex-wrap gap-3">
+                        <div>
+                            <div class="text-uppercase fw-bold text-white-50 small tracking-wider">
+                                <i class="bi bi-calculator me-1"></i> Net Final Salary Formula:
+                            </div>
+                            <div class="small text-white text-opacity-90 mt-1">
+                                (<strong>@selected.TotalDaysWorked</strong> Days Worked × <strong>₹@selected.DailySalary.ToString("N0")</strong>) - <strong>₹@selected.SalaryDeductions.ToString("N0")</strong> Deductions
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <div class="text-white-50 small fw-bold text-uppercase">Final Salary (Net Payable)</div>
+                            <div class="fs-2 fw-bold font-heading text-white">
+                                ₹@selected.FinalSalary.ToString("N2")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- 3. COMPREHENSIVE ALL-TEACHERS REMUNERATION TABLE -->
+    <div class="custom-card shadow-sm border mb-4">
+        <div class="custom-card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div class="card-title-group">
+                <div class="card-icon-badge bg-primary-subtle text-primary">
+                    <i class="bi bi-table"></i>
+                </div>
+                <div>
+                    <h5 class="card-title-text mb-0">Master Faculty Remuneration & Payroll Ledger</h5>
+                    <p class="card-subtitle-text mb-0">Live attendance, deductions, daily scale, and final take-home salary</p>
+                </div>
+            </div>
+            <div>
+                <input type="text" id="tableFilterInput" class="form-control form-control-sm" placeholder="Filter teacher or department..." onkeyup="filterPayrollTable()" style="width: 250px;" />
+            </div>
+        </div>
+
+        <div class="custom-card-body p-0">
+            <div class="table-responsive">
+                <table class="modern-table table-hover mb-0" id="payrollTable">
+                    <thead>
+                        <tr>
+                            <th>Teacher Details</th>
+                            <th>Attendance</th>
+                            <th>Total Days Worked</th>
+                            <th>Absences</th>
+                            <th>Holidays</th>
+                            <th>Daily Salary</th>
+                            <th>Salary Deductions</th>
+                            <th>Final Salary</th>
+                            <th>Last Payment</th>
+                            <th>Status</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in teachers)
+                        {
+                            var isCurrent = (selected != null && selected.TeacherId == item.TeacherId);
+                            <tr class="@(isCurrent ? "table-active" : "")">
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div style="width: 38px; height: 38px; border-radius: 50%; background: #2563eb; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.95rem;">
+                                            @(item.FullName.Length > 0 ? item.FullName[0].ToString() : "T")
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold text-dark teacher-name">@item.FullName</div>
+                                            <div class="text-muted small teacher-dept">@item.Subject • @item.Qualification</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-light text-dark border fw-semibold">
+                                        @item.AttendancePercentage%
+                                    </span>
+                                </td>
+                                <td>
+                                    <strong class="text-success">@item.TotalDaysWorked</strong> / @item.TotalWorkingDays d
+                                </td>
+                                <td>
+                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1 rounded-pill">
+                                        @item.Absences d
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info-subtle text-info border border-info-subtle px-2 py-1 rounded-pill">
+                                        @item.Holidays d
+                                    </span>
+                                </td>
+                                <td>
+                                    ₹@item.DailySalary.ToString("N0") / d
+                                </td>
+                                <td>
+                                    <span class="text-danger fw-semibold">-₹@item.SalaryDeductions.ToString("N0")</span>
+                                </td>
+                                <td>
+                                    <span class="fw-bold fs-6 text-success">
+                                        ₹@item.FinalSalary.ToString("N2")
+                                    </span>
+                                </td>
+                                <td>
+                                    @if (item.LastPaymentDate.HasValue)
+                                    {
+                                        <div class="small fw-semibold text-dark">₹@item.FinalSalary.ToString("N0")</div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">@item.LastPaymentDate.Value.ToString("dd MMM yyyy")</div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small">Pending</span>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="badge-paid">
+                                        <i class="bi bi-check-circle-fill me-1"></i> @item.PaymentStatus
+                                    </span>
+                                </td>
+                                <td class="text-end">
+                                    <div class="btn-group btn-group-sm">
+                                        <a asp-action="Index" asp-route-selectedId="@item.TeacherId" class="btn btn-outline-primary" title="Inspect this teacher">
+                                            <i class="bi bi-eye-fill"></i> Select
+                                        </a>
+                                        <a asp-action="Details" asp-route-id="@item.TeacherId" class="btn btn-primary" title="View Full Payslip & Records">
+                                            <i class="bi bi-receipt"></i> Voucher
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function filterPayrollTable() {
+        const query = document.getElementById('tableFilterInput').value.toLowerCase();
+        const rows = document.querySelectorAll('#payrollTable tbody tr');
+        rows.forEach(r => {
+            const name = r.querySelector('.teacher-name')?.textContent.toLowerCase() || '';
+            const dept = r.querySelector('.teacher-dept')?.textContent.toLowerCase() || '';
+            if (name.includes(query) || dept.includes(query)) {
+                r.style.display = '';
+            } else {
+                r.style.display = 'none';
+            }
+        });
+    }
+</script>

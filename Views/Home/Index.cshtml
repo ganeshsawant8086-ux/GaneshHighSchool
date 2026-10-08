@@ -14,6 +14,9 @@
     <button class="module-tab-btn" data-section="teachers-section">
         <i class="bi bi-person-badge-fill"></i> Teachers
     </button>
+    <button class="module-tab-btn" data-section="teacherpayments-section">
+        <i class="bi bi-cash-stack"></i> Teacher Payments
+    </button>
     <button class="module-tab-btn" data-section="passouts-section">
         <i class="bi bi-trophy-fill"></i> 10th Board Passouts
     </button>
@@ -47,6 +50,133 @@
     <button class="module-tab-btn" data-section="contact-section">
         <i class="bi bi-telephone-fill"></i> Contact
     </button>
+</div>
+
+<!-- SECTION: TEACHER PAYMENTS -->
+<div id="teacherpayments-section" class="content-section">
+    <div class="custom-card mb-4 shadow-sm border">
+        <div class="custom-card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div class="card-title-group">
+                <div class="card-icon-badge bg-success-subtle text-success">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+                <div>
+                    <h3 class="card-title-text">Teacher Payment & Remuneration Details</h3>
+                    <p class="card-subtitle-text">Attendance, holidays, daily salary, statutory deductions & final salary calculation</p>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <label class="small fw-bold text-muted mb-0">Select Teacher:</label>
+                <select id="dashTeacherSelect" class="form-select form-select-sm" style="min-width: 220px;" onchange="loadDashTeacherPayment(this.value)">
+                    @foreach (var teacher in Model.Teachers)
+                    {
+                        <option value="@teacher.Id">@teacher.FullName (@teacher.SubjectExpertise)</option>
+                    }
+                </select>
+                <a asp-controller="TeacherPayments" asp-action="Index" class="btn btn-sm btn-primary">
+                    <i class="bi bi-cash-stack me-1"></i> Full Payroll Module
+                </a>
+            </div>
+        </div>
+        <div class="custom-card-body p-4">
+            <!-- Detailed Teacher Payment Card -->
+            <div id="dashPaymentContainer">
+                <div class="row g-4 align-items-stretch">
+                    <!-- Teacher Profile Box -->
+                    <div class="col-lg-4">
+                        <div class="p-3 border rounded-3 bg-light h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <div class="d-flex align-items-center gap-3 mb-3">
+                                    <div id="dashTeacherAvatar" style="width: 56px; height: 56px; border-radius: 50%; background: #2563eb; color: white; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold;">
+                                        M
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-0 fw-bold text-dark" id="dashTeacherName">Teacher Name</h5>
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-0.5 rounded-pill" id="dashTeacherDept">Department</span>
+                                    </div>
+                                </div>
+                                <div class="small d-flex flex-column gap-1 text-muted">
+                                    <div><i class="bi bi-mortarboard text-primary me-1"></i> <strong>Qualification:</strong> <span id="dashTeacherQual">Loading...</span></div>
+                                    <div><i class="bi bi-clock-history text-info me-1"></i> <strong>Experience:</strong> <span id="dashTeacherExp">0</span> Years</div>
+                                    <div><i class="bi bi-telephone-fill text-success me-1"></i> <strong>Phone:</strong> <span id="dashTeacherPhone">-</span></div>
+                                    <div><i class="bi bi-envelope-fill text-secondary me-1"></i> <strong>Email:</strong> <span id="dashTeacherEmail">-</span></div>
+                                    <div><i class="bi bi-calendar-check text-warning me-1"></i> <strong>Joining:</strong> <span id="dashTeacherJoin">-</span></div>
+                                </div>
+                            </div>
+                            <div class="mt-3 pt-2 border-top">
+                                <a id="dashTeacherFullLink" href="#" class="btn btn-outline-primary btn-sm w-100">
+                                    <i class="bi bi-receipt me-1"></i> View Full Payslip & Records
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Metrics Grid & Final Salary -->
+                    <div class="col-lg-8">
+                        <div class="row g-2 mb-3">
+                            <div class="col-sm-6 col-md-3">
+                                <div class="p-3 bg-white border rounded-3 text-center shadow-xs">
+                                    <div class="text-muted small text-uppercase fw-semibold" style="font-size: 0.72rem;">Total Days Worked</div>
+                                    <div class="fs-4 fw-bold text-success" id="dashDaysWorked">-- <span class="small text-muted" style="font-size: 0.75rem;">/ 26 d</span></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="p-3 bg-white border rounded-3 text-center shadow-xs">
+                                    <div class="text-muted small text-uppercase fw-semibold" style="font-size: 0.72rem;">Absences</div>
+                                    <div class="fs-4 fw-bold text-danger" id="dashDaysAbsent">-- <span class="small text-muted" style="font-size: 0.75rem;">Days</span></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="p-3 bg-white border rounded-3 text-center shadow-xs">
+                                    <div class="text-muted small text-uppercase fw-semibold" style="font-size: 0.72rem;">Holidays / Leaves</div>
+                                    <div class="fs-4 fw-bold text-info" id="dashHolidays">-- <span class="small text-muted" style="font-size: 0.75rem;">Days</span></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="p-3 bg-white border rounded-3 text-center shadow-xs">
+                                    <div class="text-muted small text-uppercase fw-semibold" style="font-size: 0.72rem;">Daily Salary</div>
+                                    <div class="fs-4 fw-bold text-dark" id="dashDailySalary">₹0</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-4">
+                                <div class="p-3 bg-white border rounded-3 text-center shadow-xs">
+                                    <div class="text-muted small text-uppercase fw-semibold" style="font-size: 0.72rem;">Gross Salary</div>
+                                    <div class="fs-5 fw-bold text-dark" id="dashGrossSalary">₹0.00</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-4">
+                                <div class="p-3 bg-white border rounded-3 text-center shadow-xs">
+                                    <div class="text-muted small text-uppercase fw-semibold" style="font-size: 0.72rem;">Salary Deductions</div>
+                                    <div class="fs-5 fw-bold text-danger" id="dashDeductions">-₹0.00</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4">
+                                <div class="p-3 bg-white border rounded-3 text-center shadow-xs">
+                                    <div class="text-muted small text-uppercase fw-semibold" style="font-size: 0.72rem;">Last Payment</div>
+                                    <div class="fs-6 fw-bold text-primary" id="dashLastPayment">--</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Final Salary Calculation Result Banner -->
+                        <div class="p-3 rounded-3 text-white d-flex justify-content-between align-items-center flex-wrap gap-2 shadow-sm" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%);">
+                            <div>
+                                <div class="small text-uppercase fw-bold text-white-50">
+                                    <i class="bi bi-check-circle-fill me-1"></i> Final Salary (Net Payable Take-Home)
+                                </div>
+                                <div class="small text-white text-opacity-90 mt-1">
+                                    Formula: (<span id="dashFormulaDays">0</span> Days Worked × ₹<span id="dashFormulaDaily">0</span>) - ₹<span id="dashFormulaDed">0</span> Deductions
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <div class="fs-2 fw-bold" id="dashFinalSalary">₹0.00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- ==========================================
@@ -2390,4 +2520,47 @@
             }
         });
     }
+
+    // Live AJAX inspector for teacher payments
+    function loadDashTeacherPayment(teacherId) {
+        if (!teacherId) return;
+        fetch('/TeacherPayments/GetTeacherPaymentSummary?id=' + encodeURIComponent(teacherId))
+            .then(res => res.json())
+            .then(data => {
+                if (!data || !data.success) return;
+                const t = data.teacher;
+                const p = data.payment;
+
+                document.getElementById('dashTeacherName').textContent = t.fullName;
+                document.getElementById('dashTeacherDept').textContent = t.subject + ' Department';
+                document.getElementById('dashTeacherQual').textContent = t.qualification;
+                document.getElementById('dashTeacherExp').textContent = t.experience;
+                document.getElementById('dashTeacherPhone').textContent = t.phone;
+                document.getElementById('dashTeacherEmail').textContent = t.email;
+                document.getElementById('dashTeacherJoin').textContent = t.joiningDate;
+                document.getElementById('dashTeacherAvatar').textContent = t.fullName.charAt(0);
+                document.getElementById('dashTeacherFullLink').setAttribute('href', '/TeacherPayments/Details/' + t.id);
+
+                document.getElementById('dashDaysWorked').innerHTML = `${p.totalDaysWorked} <span class="small text-muted" style="font-size: 0.75rem;">/ ${p.totalWorkingDays} d</span>`;
+                document.getElementById('dashDaysAbsent').innerHTML = `${p.absences} <span class="small text-muted" style="font-size: 0.75rem;">Days</span>`;
+                document.getElementById('dashHolidays').innerHTML = `${p.holidays} <span class="small text-muted" style="font-size: 0.75rem;">Days</span>`;
+                document.getElementById('dashDailySalary').textContent = '₹' + Number(p.dailySalary).toLocaleString('en-IN');
+                document.getElementById('dashGrossSalary').textContent = '₹' + Number(p.grossSalary).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+                document.getElementById('dashDeductions').textContent = '-₹' + Number(p.salaryDeductions).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+                document.getElementById('dashLastPayment').textContent = '₹' + Number(p.lastPaymentAmount).toLocaleString('en-IN') + ' (' + p.lastPaymentDate + ')';
+
+                document.getElementById('dashFormulaDays').textContent = p.totalDaysWorked;
+                document.getElementById('dashFormulaDaily').textContent = Number(p.dailySalary).toLocaleString('en-IN');
+                document.getElementById('dashFormulaDed').textContent = Number(p.salaryDeductions).toLocaleString('en-IN');
+                document.getElementById('dashFinalSalary').textContent = '₹' + Number(p.finalSalary).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+            })
+            .catch(err => console.error('Error fetching teacher payment summary:', err));
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const select = document.getElementById('dashTeacherSelect');
+        if (select && select.value) {
+            loadDashTeacherPayment(select.value);
+        }
+    });
 </script>

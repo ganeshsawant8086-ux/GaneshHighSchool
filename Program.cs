@@ -24,6 +24,9 @@ namespace Ganesh1
 
             var app = builder.Build();
 
+            // ✅ Auto-initialize & seed database if needed
+            DbInitializer.Initialize(app.Services);
+
             // ✅ Configure the HTTP request pipeline
             if (!app.Environment.IsDevelopment())
             {

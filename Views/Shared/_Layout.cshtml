@@ -54,10 +54,17 @@
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
-                        <a class="sidebar-nav-link" data-section="teachers-section" href="/#teachers">
+                        <a class="sidebar-nav-link" data-section="teachers-section" asp-controller="Teachers" asp-action="Index">
                             <i class="bi bi-person-badge-fill"></i>
                             <span>Teachers & Faculty</span>
                             <span class="nav-badge bg-info text-white">Staff</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a class="sidebar-nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "TeacherPayments" ? "active" : "")" data-section="teacherpayments-section" asp-controller="TeacherPayments" asp-action="Index">
+                            <i class="bi bi-cash-stack text-success"></i>
+                            <span>Teacher Payments</span>
+                            <span class="nav-badge bg-success text-white">Payroll</span>
                         </a>
                     </li>
                     <li class="sidebar-nav-item">

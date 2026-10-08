@@ -9,6 +9,7 @@ namespace Ganesh1.Models
         public DbSet<Student> Students { get; set; }
         public DbSet<Passout> Passouts { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
+        public DbSet<TeacherPayment> TeacherPayments { get; set; }
         public DbSet<Stock> Stocks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
